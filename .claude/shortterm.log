@@ -1,0 +1,2 @@
+2026-05-01T00:00:00Z|knightsrook-songwriters-toolkit|none|initial-scaffold-complete|express+capacitor+mysql+clerk-stack|await-user-next-task
+2026-05-02T21:30:00Z|knightsrook-songwriters-toolkit|server/routes+client/+.env.example+README|built-server-routes+react-client|tiptap-lyric-editor+clerk-auth+ai-assist-sidebar+pwa|fill-env+provision-db+first-run+commit
