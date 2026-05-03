@@ -52,8 +52,12 @@ html, body, #root { height: 100%; overscroll-behavior: none; }
   padding: 0.5rem 0.75rem;
   height: 72px;
   flex-shrink: 0;
-  background: linear-gradient(180deg, #252538 0%, #1a1a2a 60%, #141420 100%);
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
   border-bottom: 2px solid #3a3a5a;
+  background:
+    linear-gradient(180deg, #252538 0%, #1a1a2a 60%, #141420 100%) padding-box,
+    var(--magenta) border-box;
   box-shadow: inset 0 1px 0 rgba(200,200,255,.08), 0 3px 12px rgba(0,0,0,.7);
 }
 
@@ -99,23 +103,44 @@ html, body, #root { height: 100%; overscroll-behavior: none; }
   display: flex;
   flex-direction: column;
   margin: 0 0 4px;
-  border: 7px solid transparent;
+  border: 8px solid transparent;
   border-top: none;
   border-radius: 0 0 20px 20px;
   background:
     linear-gradient(var(--bg), var(--bg)) padding-box,
     linear-gradient(180deg,
-      var(--amber)       0%,
-      var(--amber-dim)   25%,
-      var(--magenta-dim) 45%,
-      var(--magenta)     55%,
-      var(--teal-dim)    75%,
+      var(--magenta)     0%,
+      var(--magenta)     25%,
+      var(--magenta-dim) 28%,
+      var(--amber-dim)   31%,
+      var(--amber)       34%,
+      var(--amber)       63%,
+      var(--amber-dim)   66%,
+      var(--teal-dim)    69%,
+      var(--teal)        72%,
       var(--teal)        100%) border-box;
   box-shadow:
-    -5px 0 14px rgba(240,168,48,.2),
-    5px 0 14px rgba(0,212,200,.16),
+    -5px 0 14px rgba(208,64,184,.2),
+    5px 0 14px rgba(208,64,184,.2),
     0 6px 20px rgba(0,212,200,.2),
-    0 0 20px rgba(208,64,184,.12);
+    0 0 20px rgba(240,168,48,.12);
+}
+
+.app-main::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 0 0 12px 12px;
+  clip-path: inset(0 -8px -8px -8px round 0 0 12px 12px);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  z-index: 10;
+  box-shadow:
+    0 0 0 1px #c0c0c0,
+    0 0 0 2px #d8d8d8,
+    0 0 0 3px #eeeeee,
+    0 0 0 4px #f8f8f8,
+    0 0 0 5px #ffffff;
 }
 
 /* ── AUTH SCREEN ───────────────────────────────────── */
@@ -133,15 +158,7 @@ html, body, #root { height: 100%; overscroll-behavior: none; }
   flex-direction: column;
   height: 100%;
   overflow: hidden;
-  border-radius: 0 0 13px 13px;
-  clip-path: inset(0 -7px -7px -7px round 0 0 13px 13px);
-  box-shadow:
-    0 0 0 2px #444,
-    0 0 0 3px #999,
-    0 0 0 4px #ddd,
-    0 0 0 5px #aaa,
-    0 0 0 6px #666,
-    0 0 0 7px #444;
+  border-radius: 0 0 12px 12px;
 }
 
 /* ── VISUALIZER ────────────────────────────────────── */
@@ -354,15 +371,7 @@ html, body, #root { height: 100%; overscroll-behavior: none; }
   flex-direction: column;
   height: 100%;
   overflow: hidden;
-  border-radius: 0 0 13px 13px;
-  clip-path: inset(0 -7px -7px -7px round 0 0 13px 13px);
-  box-shadow:
-    0 0 0 2px #444,
-    0 0 0 3px #999,
-    0 0 0 4px #ddd,
-    0 0 0 5px #aaa,
-    0 0 0 6px #666,
-    0 0 0 7px #444;
+  border-radius: 0 0 12px 12px;
 }
 
 /* ── PANEL TOGGLE ──────────────────────────────────── */

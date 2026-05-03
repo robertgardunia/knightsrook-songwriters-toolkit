@@ -67,9 +67,9 @@ song_audio     — song_id, audio_file_id  (many-to-many join)
 ## UI
 
 - Retro-futurism aesthetic inspired by vintage jukeboxes
-- Mobile-first, dark theme, warm amber neon + teal accents
+- Mobile-first, dark theme, neon tube aesthetic in magenta → amber → teal
 - Fonts: Orbitron (display), Rajdhani (UI), Space Mono (lyrics editor)
 - Chunky touch targets (52px minimum) for 3am one-thumb use
 - Reusable `Button` component (`variant=plastic|ghost`, `size=md|sm`, `icon`) — all buttons share the same chunky ivory plastic CSS with cut-hole protrusion effect
-- Neon gradient frame (amber → magenta → teal) wraps the full content area from header to bottom
+- Neon gradient frame (magenta → amber → teal) runs full screen height alongside header and content; 8px border with `mix-blend-mode: multiply` chrome ring overlay for cylindrical tube effect
 - Dark control bars (header, panel-toggle, panel-nav) for consistent button contrast
