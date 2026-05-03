@@ -1,23 +1,29 @@
-import { useEffect, useState, useCallback } from "react";
-import { getLyrics, saveLyrics, getAssist } from "../lib/api";
+import { useEffect, useState, useCallback, useRef } from "react";
+import { getLyrics, saveLyrics, getAssist, type Song } from "../lib/api";
 import LyricEditor from "../components/LyricEditor";
+import Button from "../components/Button";
 
 interface Props {
-  songId: string;
-  onBack: () => void;
+  song: Song;
 }
 
-export default function SongDetail({ songId, onBack }: Props) {
+type Panel = "lyrics" | "mixer";
+type AnimState = "idle" | "out" | "in";
+
+export default function SongDetail({ song }: Props) {
   const [content, setContent] = useState<string | null>(null);
   const [saveState, setSaveState] = useState<"saved" | "unsaved" | "saving">("saved");
+  const [panel, setPanel] = useState<Panel>("lyrics");
+  const [anim, setAnim] = useState<AnimState>("idle");
   const [selectedWord, setSelectedWord] = useState("");
   const [assistType, setAssistType] = useState<"rhymes" | "synonyms">("rhymes");
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [assistLoading, setAssistLoading] = useState(false);
+  const nextPanel = useRef<Panel>("lyrics");
 
   useEffect(() => {
-    getLyrics(songId).then((l) => setContent(l.content ?? ""));
-  }, [songId]);
+    getLyrics(song.id).then(l => setContent(l.content ?? ""));
+  }, [song.id]);
 
   const handleChange = useCallback((html: string) => {
     setContent(html);
@@ -27,8 +33,19 @@ export default function SongDetail({ songId, onBack }: Props) {
   async function handleSave() {
     if (content === null) return;
     setSaveState("saving");
-    await saveLyrics(songId, content);
+    await saveLyrics(song.id, content);
     setSaveState("saved");
+  }
+
+  function switchPanel(to: Panel) {
+    if (to === panel || anim !== "idle") return;
+    nextPanel.current = to;
+    setAnim("out");
+    setTimeout(() => {
+      setPanel(to);
+      setAnim("in");
+      setTimeout(() => setAnim("idle"), 220);
+    }, 200);
   }
 
   async function handleAssist() {
@@ -42,58 +59,67 @@ export default function SongDetail({ songId, onBack }: Props) {
     }
   }
 
-  if (content === null) return <div className="page"><p>Loading…</p></div>;
-
   return (
     <div className="song-detail">
-      <header>
-        <button onClick={onBack}>← Songs</button>
-        <button onClick={handleSave} disabled={saveState === "saved"}>
-          {saveState === "saving" ? "Saving…" : saveState === "unsaved" ? "Save" : "Saved"}
-        </button>
-      </header>
-      <div className="editor-layout">
-        <div className="editor-pane">
-          <LyricEditor content={content} onChange={handleChange} />
-        </div>
-        <aside className="ai-pane">
-          <h3>Word Assistant</h3>
-          <input
-            value={selectedWord}
-            onChange={(e) => setSelectedWord(e.target.value)}
-            placeholder="Enter a word…"
-          />
-          <div className="assist-type">
-            <label>
-              <input
-                type="radio"
-                value="rhymes"
-                checked={assistType === "rhymes"}
-                onChange={() => setAssistType("rhymes")}
-              />
-              Rhymes
-            </label>
-            <label>
-              <input
-                type="radio"
-                value="synonyms"
-                checked={assistType === "synonyms"}
-                onChange={() => setAssistType("synonyms")}
-              />
-              Synonyms
-            </label>
+      <div className="panel-toggle">
+        <Button
+          className={panel === "lyrics" ? "panel-btn--active" : ""}
+          onClick={() => switchPanel("lyrics")}
+        >Lyrics</Button>
+        <Button
+          className={panel === "mixer" ? "panel-btn--active" : ""}
+          onClick={() => switchPanel("mixer")}
+        >Mixer</Button>
+        {panel === "lyrics" && (
+          <Button size="sm" onClick={handleSave} disabled={saveState !== "unsaved"}>
+            {saveState === "saving" ? "Saving…" : saveState === "unsaved" ? "Save" : "Saved"}
+          </Button>
+        )}
+      </div>
+
+      <div className={`panel-content panel-content--${anim}`}>
+        {panel === "lyrics" ? (
+          content === null ? (
+            <div className="panel-loading">Loading…</div>
+          ) : (
+            <div className="editor-layout">
+              <div className="editor-pane">
+                <LyricEditor content={content} onChange={handleChange} />
+              </div>
+              <aside className="ai-pane">
+                <h3>Word Assistant</h3>
+                <input
+                  value={selectedWord}
+                  onChange={e => setSelectedWord(e.target.value)}
+                  placeholder="Enter a word…"
+                />
+                <div className="assist-type">
+                  <label>
+                    <input type="radio" value="rhymes" checked={assistType === "rhymes"} onChange={() => setAssistType("rhymes")} />
+                    Rhymes
+                  </label>
+                  <label>
+                    <input type="radio" value="synonyms" checked={assistType === "synonyms"} onChange={() => setAssistType("synonyms")} />
+                    Synonyms
+                  </label>
+                </div>
+                <Button onClick={handleAssist} disabled={assistLoading || !selectedWord.trim()}>
+                  {assistLoading ? "…" : "Get Suggestions"}
+                </Button>
+                <ul className="suggestions">
+                  {suggestions.map(w => (
+                    <li key={w} onClick={() => setSelectedWord(w)}>{w}</li>
+                  ))}
+                </ul>
+              </aside>
+            </div>
+          )
+        ) : (
+          <div className="mixer-placeholder">
+            <div className="mixer-placeholder__icon">🎚</div>
+            <p>Mixer coming soon</p>
           </div>
-          <button onClick={handleAssist} disabled={assistLoading || !selectedWord.trim()}>
-            {assistLoading ? "…" : "Get Suggestions"}
-          </button>
-          <ul className="suggestions">
-            {suggestions.map((w) => (
-              <li key={w} onClick={() => setSelectedWord(w)}>
-                {w}
-              </li>
-            ))}
-          </ul>
-        </aside>
+        )}
       </div>
     </div>
   );

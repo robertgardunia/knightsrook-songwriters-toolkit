@@ -39,8 +39,37 @@ npm install
 npm run dev   # starts on http://localhost:5173, proxies /api → http://localhost:5010
 ```
 
+## Screens
+
+- **Home** — jukebox-style title card panel + audio visualizer. Fixed 10 slots; empty slots are tappable to create a new song.
+- **Song** — full song experience with flip panel between **Lyrics** (Tiptap editor + Word Assistant) and **Mixer** (placeholder).
+- **Library** — audio file manager (slide-in drawer). Files persist independently of songs.
+- **Settings** — account + preferences (slide-in drawer).
+
+Chrome (Library + Settings icons) is persistent across all screens.
+
 ## Architecture
 
-- Lyrics sync via account/backend
-- Audio files stored locally on device, metadata synced
-- Songs contain lyrics + track references
+- Songs are the primary object. Each song has lyrics and can reference multiple audio files.
+- Audio files are stored independently (`audio_files` table). Many-to-many with songs via `song_audio` join table. Files survive song deletion.
+- Lyrics sync via server/MySQL.
+- Audio stays local for MVP (metadata only in DB).
+
+## Data model
+
+```
+songs          — id, user_id, title
+lyrics         — id, song_id, content
+audio_files    — id, user_id, filename, original_name, mime_type, duration_ms, size_bytes
+song_audio     — song_id, audio_file_id  (many-to-many join)
+```
+
+## UI
+
+- Retro-futurism aesthetic inspired by vintage jukeboxes
+- Mobile-first, dark theme, warm amber neon + teal accents
+- Fonts: Orbitron (display), Rajdhani (UI), Space Mono (lyrics editor)
+- Chunky touch targets (52px minimum) for 3am one-thumb use
+- Reusable `Button` component (`variant=plastic|ghost`, `size=md|sm`, `icon`) — all buttons share the same chunky ivory plastic CSS with cut-hole protrusion effect
+- Neon gradient frame (amber → magenta → teal) wraps the full content area from header to bottom
+- Dark control bars (header, panel-toggle, panel-nav) for consistent button contrast
