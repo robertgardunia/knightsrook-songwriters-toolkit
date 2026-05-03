@@ -94,8 +94,8 @@ html, body, #root { height: 100%; overscroll-behavior: none; }
 
 /* ── MAIN CONTENT AREA ─────────────────────────────── */
 .app-main {
+  position: relative;
   flex: 1;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
   margin: 0 0 4px;
@@ -104,13 +104,6 @@ html, body, #root { height: 100%; overscroll-behavior: none; }
   border-radius: 0 0 20px 20px;
   background:
     linear-gradient(var(--bg), var(--bg)) padding-box,
-    linear-gradient(105deg,
-      rgba(255,255,255,.55) 0%,
-      rgba(255,255,255,.15) 18%,
-      transparent           35%,
-      transparent           65%,
-      rgba(0,0,0,.2)        82%,
-      rgba(0,0,0,.35)       100%) border-box,
     linear-gradient(180deg,
       var(--amber)       0%,
       var(--amber-dim)   25%,
@@ -140,6 +133,15 @@ html, body, #root { height: 100%; overscroll-behavior: none; }
   flex-direction: column;
   height: 100%;
   overflow: hidden;
+  border-radius: 0 0 13px 13px;
+  clip-path: inset(0 -7px -7px -7px round 0 0 13px 13px);
+  box-shadow:
+    0 0 0 2px #444,
+    0 0 0 3px #999,
+    0 0 0 4px #ddd,
+    0 0 0 5px #aaa,
+    0 0 0 6px #666,
+    0 0 0 7px #444;
 }
 
 /* ── VISUALIZER ────────────────────────────────────── */
@@ -352,6 +354,15 @@ html, body, #root { height: 100%; overscroll-behavior: none; }
   flex-direction: column;
   height: 100%;
   overflow: hidden;
+  border-radius: 0 0 13px 13px;
+  clip-path: inset(0 -7px -7px -7px round 0 0 13px 13px);
+  box-shadow:
+    0 0 0 2px #444,
+    0 0 0 3px #999,
+    0 0 0 4px #ddd,
+    0 0 0 5px #aaa,
+    0 0 0 6px #666,
+    0 0 0 7px #444;
 }
 
 /* ── PANEL TOGGLE ──────────────────────────────────── */
