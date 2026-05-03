@@ -104,13 +104,20 @@ html, body, #root { height: 100%; overscroll-behavior: none; }
   border-radius: 0 0 20px 20px;
   background:
     linear-gradient(var(--bg), var(--bg)) padding-box,
+    linear-gradient(105deg,
+      rgba(255,255,255,.55) 0%,
+      rgba(255,255,255,.15) 18%,
+      transparent           35%,
+      transparent           65%,
+      rgba(0,0,0,.2)        82%,
+      rgba(0,0,0,.35)       100%) border-box,
     linear-gradient(180deg,
-      var(--amber)      0%,
-      var(--amber-dim)  25%,
+      var(--amber)       0%,
+      var(--amber-dim)   25%,
       var(--magenta-dim) 45%,
-      var(--magenta)    55%,
-      var(--teal-dim)   75%,
-      var(--teal)       100%) border-box;
+      var(--magenta)     55%,
+      var(--teal-dim)    75%,
+      var(--teal)        100%) border-box;
   box-shadow:
     -5px 0 14px rgba(240,168,48,.2),
     5px 0 14px rgba(0,212,200,.16),
