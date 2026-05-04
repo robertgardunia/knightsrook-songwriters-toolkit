@@ -80,7 +80,7 @@ html, body, #root { height: 100%; overscroll-behavior: none; }
     inset 0 0 0 5px #777,
     inset 0 0 0 6px #2a2a2a;
   pointer-events: none;
-  z-index: 20;
+  z-index: 50;
 }
 
 /* Clips header + content to the top arc as one unit */
@@ -110,7 +110,6 @@ html, body, #root { height: 100%; overscroll-behavior: none; }
     #ececec 50%, #dedede 52%,
     #bcbcbc 60%, #848484 72%,
     #444 84%, #242424 93%, #111 100%);
-  border-bottom: 1px solid #888;
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,.55),
     inset 0 -1px 0 rgba(0,0,0,.45),
@@ -161,7 +160,6 @@ html, body, #root { height: 100%; overscroll-behavior: none; }
     #ececec 50%, #dedede 52%,
     #bcbcbc 60%, #848484 72%,
     #444 84%, #242424 93%, #111 100%);
-  border-top: 1px solid #888;
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,.5),
     inset 0 -1px 0 rgba(0,0,0,.4),
