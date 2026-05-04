@@ -49,7 +49,7 @@ npm run dev   # starts on http://localhost:5173, proxies /api → http://localho
 Chrome is persistent across all screens:
 - **Bottom nav**: prev/next chevrons (disabled at page limits), visualizer cycle, Lyrics button (disabled unless a song is active), Library, Settings
 - Tapping the bar-chart icon cycles through 5 visualizer types: bars, scope, VU meters, dot matrix, radial
-- Lyrics nav button jumps directly to the lyrics panel from anywhere (Mixer tab, home screen)
+- Lyrics nav button: with active song → jumps to lyrics panel; without a song → opens a blank editor that creates a new song on save
 - Visualizer is idle (static) until a song is playing
 - Account management (sign in / manage profile) lives inside the Settings drawer
 

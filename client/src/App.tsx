@@ -1,7 +1,7 @@
-import { Show, useClerk, useUser } from "@clerk/react";
 import { useState, useEffect } from "react";
 import SongList from "./pages/SongList";
 import SongDetail from "./pages/SongDetail";
+import NewLyrics from "./pages/NewLyrics";
 import LibraryDrawer from "./components/LibraryDrawer";
 import SettingsDrawer from "./components/SettingsDrawer";
 import Button from "./components/Button";
@@ -69,9 +69,9 @@ function IconLyrics() {
 }
 
 export default function App() {
-  const { openSignIn } = useClerk();
   const [activeSong, setActiveSong] = useState<Song | null>(null);
   const [panel, setPanel] = useState<Panel>("lyrics");
+  const [freshLyrics, setFreshLyrics] = useState(false);
   const [libraryOpen, setLibraryOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [page, setPage] = useState(0);
@@ -81,7 +81,24 @@ export default function App() {
   useEffect(() => { setPanel("lyrics"); }, [activeSong?.id]);
 
   function selectSong(song: Song | null) {
+    setFreshLyrics(false);
     setActiveSong(song);
+  }
+
+  function handleLyricsNav() {
+    if (activeSong) {
+      setPanel("lyrics");
+    } else {
+      setFreshLyrics(true);
+    }
+  }
+
+  function handleBack() {
+    if (freshLyrics) {
+      setFreshLyrics(false);
+    } else {
+      selectSong(null);
+    }
   }
 
   return (
@@ -90,6 +107,8 @@ export default function App() {
         <header className="app-chrome">
           {activeSong ? (
             <span className="chrome-song-title">{activeSong.title}</span>
+          ) : freshLyrics ? (
+            <span className="chrome-song-title">New Song</span>
           ) : (
             <span className="chrome-wordmark">Songwriter<br />Toolkit</span>
           )}
@@ -103,6 +122,8 @@ export default function App() {
               panel={panel}
               onPanelChange={setPanel}
             />
+          ) : freshLyrics ? (
+            <NewLyrics onSaved={song => { setFreshLyrics(false); setActiveSong(song); }} />
           ) : (
             <SongList
               onSelect={selectSong}
@@ -117,14 +138,14 @@ export default function App() {
 
       <nav className="app-nav">
         <div className="nav-left">
-          {activeSong
-            ? <Button icon onClick={() => selectSong(null)} title="Back"><IconChevronLeft /></Button>
+          {activeSong || freshLyrics
+            ? <Button icon onClick={handleBack} title="Back"><IconChevronLeft /></Button>
             : <Button icon onClick={() => setPage(p => Math.max(0, p - 1))} disabled={page === 0} title="Previous page"><IconChevronLeft /></Button>
           }
         </div>
         <div className="nav-center">
           <Button icon onClick={() => setVizIdx(i => (i + 1) % VIZ_TYPES.length)} title="Cycle visualizer"><IconBarChart /></Button>
-          <Button icon disabled={!activeSong} onClick={() => setPanel("lyrics")} title="Lyrics"><IconLyrics /></Button>
+          <Button icon onClick={handleLyricsNav} title="Lyrics"><IconLyrics /></Button>
           <Button icon onClick={() => setLibraryOpen(true)} title="Audio library"><IconLibrary /></Button>
           <Button icon onClick={() => setSettingsOpen(true)} title="Settings"><IconSettings /></Button>
         </div>
