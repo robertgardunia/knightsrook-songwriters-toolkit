@@ -30,6 +30,22 @@ function IconBarChart() {
   );
 }
 
+function IconChevronLeft() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="15 18 9 12 15 6" />
+    </svg>
+  );
+}
+
+function IconChevronRight() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="9 18 15 12 9 6" />
+    </svg>
+  );
+}
+
 function IconSettings() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -112,17 +128,21 @@ export default function App() {
       </div>
 
       <nav className="app-nav">
-        {activeSong ? (
-          <Button icon onClick={() => setActiveSong(null)} title="Back">←</Button>
-        ) : (
-          <>
-            <Button icon onClick={() => setPage(p => Math.max(0, p - 1))} disabled={page === 0}>‹</Button>
-            {totalPages > 1 && <span className="page-indicator">{page + 1} / {totalPages}</span>}
-            <Button icon onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))} disabled={page === totalPages - 1}>›</Button>
-          </>
-        )}
-        <Button icon onClick={() => setVizIdx(i => (i + 1) % VIZ_TYPES.length)} title="Cycle visualizer"><IconBarChart /></Button>
-        <Button icon onClick={() => setLibraryOpen(true)} title="Library"><IconLibrary /></Button>
+        <div className="nav-left">
+          {activeSong
+            ? <Button icon onClick={() => setActiveSong(null)} title="Back"><IconChevronLeft /></Button>
+            : <Button icon onClick={() => setPage(p => Math.max(0, p - 1))} disabled={page === 0}><IconChevronLeft /></Button>
+          }
+        </div>
+        <div className="nav-center">
+          <Button icon onClick={() => setVizIdx(i => (i + 1) % VIZ_TYPES.length)} title="Cycle visualizer"><IconBarChart /></Button>
+          <Button icon onClick={() => setLibraryOpen(true)} title="Library"><IconLibrary /></Button>
+        </div>
+        <div className="nav-right">
+          {!activeSong && (
+            <Button icon onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))} disabled={page === totalPages - 1}><IconChevronRight /></Button>
+          )}
+        </div>
       </nav>
 
       <LibraryDrawer open={libraryOpen} onClose={() => setLibraryOpen(false)} />
