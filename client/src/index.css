@@ -77,8 +77,8 @@ html, body, #root { height: 100%; overscroll-behavior: none; }
     inset 0 0 0 2px #777,
     inset 0 0 0 3px #bbb,
     inset 0 0 0 4px #ccc,
-    inset 0 0 0 5px #777,
-    inset 0 0 0 6px #2a2a2a;
+    inset 0 0 0 0px #777,
+    inset 0 0 0 0px #2a2a2a;
   pointer-events: none;
   z-index: 50;
 }
