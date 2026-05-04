@@ -1,13 +1,10 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import {
-  getSongLyrics,
-  saveLyrics,
-  createAndAssociateLyrics,
-  getAssist,
-  type Song,
-  type Lyrics,
+  getSongLyrics, saveLyrics, createAndAssociateLyrics, getAssist,
+  type Song, type Lyrics,
 } from "../lib/api";
-import LyricEditor from "../components/LyricEditor";
+import BlockLyricEditor from "../components/BlockLyricEditor";
+import { parseLyricsContent, serializeLyricsContent, type LyricsContent } from "../lib/lyricsBlocks";
 import Mixer from "../components/Mixer";
 import { type VizType } from "../components/Visualizer";
 import Button from "../components/Button";
@@ -25,7 +22,7 @@ interface Props {
 export default function SongDetail({ song, vizType, panel, onPanelChange }: Props) {
   const [activeLyrics, setActiveLyrics] = useState<Lyrics | null>(null);
   const [lyricsLoading, setLyricsLoading] = useState(true);
-  const [content, setContent] = useState<string | null>(null);
+  const [lyricsContent, setLyricsContent] = useState<LyricsContent | null>(null);
   const [saveState, setSaveState] = useState<"saved" | "unsaved" | "saving">("saved");
   const [displayPanel, setDisplayPanel] = useState<Panel>(panel);
   const [anim, setAnim] = useState<AnimState>("idle");
@@ -38,11 +35,12 @@ export default function SongDetail({ song, vizType, panel, onPanelChange }: Prop
   useEffect(() => {
     setLyricsLoading(true);
     setActiveLyrics(null);
-    setContent(null);
+    setLyricsContent(null);
     getSongLyrics(song.id)
       .then(sheets => {
-        setActiveLyrics(sheets[0] ?? null);
-        setContent(sheets[0]?.content ?? null);
+        const first = sheets[0] ?? null;
+        setActiveLyrics(first);
+        setLyricsContent(first ? parseLyricsContent(first.content) : null);
       })
       .finally(() => setLyricsLoading(false));
   }, [song.id]);
@@ -58,22 +56,22 @@ export default function SongDetail({ song, vizType, panel, onPanelChange }: Prop
     }, 200);
   }, [panel]);
 
-  const handleChange = useCallback((html: string) => {
-    setContent(html);
+  const handleChange = useCallback((content: LyricsContent) => {
+    setLyricsContent(content);
     setSaveState("unsaved");
   }, []);
 
   async function handleSave() {
-    if (content === null || !activeLyrics) return;
+    if (!lyricsContent || !activeLyrics) return;
     setSaveState("saving");
-    await saveLyrics(activeLyrics.id, content);
+    await saveLyrics(activeLyrics.id, serializeLyricsContent(lyricsContent));
     setSaveState("saved");
   }
 
   async function handleWriteLyrics() {
     const created = await createAndAssociateLyrics(song.id, song.title, "");
     setActiveLyrics(created);
-    setContent(created.content ?? "");
+    setLyricsContent(parseLyricsContent(created.content));
     setSaveState("saved");
   }
 
@@ -89,10 +87,9 @@ export default function SongDetail({ song, vizType, panel, onPanelChange }: Prop
   }
 
   function renderLyricsPanel() {
-    if (lyricsLoading) {
-      return <div className="panel-loading">Loading…</div>;
-    }
-    if (!activeLyrics) {
+    if (lyricsLoading) return <div className="panel-loading">Loading…</div>;
+
+    if (!activeLyrics || !lyricsContent) {
       return (
         <div className="panel-loading">
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem" }}>
@@ -102,13 +99,11 @@ export default function SongDetail({ song, vizType, panel, onPanelChange }: Prop
         </div>
       );
     }
-    if (content === null) {
-      return <div className="panel-loading">Loading…</div>;
-    }
+
     return (
       <div className="editor-layout">
         <div className="editor-pane">
-          <LyricEditor content={content} onChange={handleChange} />
+          <BlockLyricEditor content={lyricsContent} onChange={handleChange} />
         </div>
         <aside className="ai-pane">
           <h3>Word Assistant</h3>

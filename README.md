@@ -4,7 +4,7 @@ A songwriter's toolkit with multi-track recording, lyric editor, and AI-powered 
 
 ## Stack
 
-- **Client**: React + Vite + Tiptap + ClerkProvider (PWA-ready)
+- **Client**: React + Vite + dnd-kit + ClerkProvider (PWA-ready)
 - **Server**: Express + TypeScript
 - **Database**: MySQL
 - **Auth**: Clerk

@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { saveLyrics, type Lyrics } from "../lib/api";
-import LyricEditor from "../components/LyricEditor";
+import BlockLyricEditor from "../components/BlockLyricEditor";
+import { parseLyricsContent, serializeLyricsContent, type LyricsContent } from "../lib/lyricsBlocks";
 import Button from "../components/Button";
 
 interface Props {
@@ -10,11 +11,13 @@ interface Props {
 
 export default function LyricsDetail({ lyrics, onBack }: Props) {
   const [title, setTitle] = useState(lyrics.title);
-  const [content, setContent] = useState(lyrics.content ?? "");
+  const [lyricsContent, setLyricsContent] = useState<LyricsContent>(() =>
+    parseLyricsContent(lyrics.content)
+  );
   const [saveState, setSaveState] = useState<"saved" | "unsaved" | "saving">("saved");
 
-  const handleChange = useCallback((html: string) => {
-    setContent(html);
+  const handleChange = useCallback((content: LyricsContent) => {
+    setLyricsContent(content);
     setSaveState("unsaved");
   }, []);
 
@@ -26,7 +29,7 @@ export default function LyricsDetail({ lyrics, onBack }: Props) {
   async function handleSave() {
     setSaveState("saving");
     try {
-      await saveLyrics(lyrics.id, content, title.trim() || "Untitled");
+      await saveLyrics(lyrics.id, serializeLyricsContent(lyricsContent), title.trim() || "Untitled");
       setSaveState("saved");
     } catch {
       setSaveState("unsaved");
@@ -47,11 +50,7 @@ export default function LyricsDetail({ lyrics, onBack }: Props) {
         </Button>
       </div>
       <div className="panel-content panel-content--idle">
-        <div className="editor-layout">
-          <div className="editor-pane">
-            <LyricEditor content={content} onChange={handleChange} />
-          </div>
-        </div>
+        <BlockLyricEditor content={lyricsContent} onChange={handleChange} />
       </div>
     </div>
   );

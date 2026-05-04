@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { createLyrics, type Lyrics } from "../lib/api";
-import LyricEditor from "../components/LyricEditor";
+import BlockLyricEditor from "../components/BlockLyricEditor";
+import { emptyContent, serializeLyricsContent, type LyricsContent } from "../lib/lyricsBlocks";
 import Button from "../components/Button";
 
 interface Props {
@@ -9,16 +10,22 @@ interface Props {
 
 export default function NewLyrics({ onSaved }: Props) {
   const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+  const [lyricsContent, setLyricsContent] = useState<LyricsContent>(emptyContent);
   const [saving, setSaving] = useState(false);
 
-  const handleChange = useCallback((html: string) => setContent(html), []);
+  const handleChange = useCallback((content: LyricsContent) => {
+    setLyricsContent(content);
+  }, []);
+
+  const hasContent = lyricsContent.blocks.some(b => b.lines.some(l => l.text.trim()));
 
   async function handleSave() {
-    const t = title.trim() || "Untitled";
     setSaving(true);
     try {
-      const lyrics = await createLyrics(t, content);
+      const lyrics = await createLyrics(
+        title.trim() || "Untitled",
+        serializeLyricsContent(lyricsContent)
+      );
       onSaved(lyrics);
     } finally {
       setSaving(false);
@@ -35,16 +42,12 @@ export default function NewLyrics({ onSaved }: Props) {
           placeholder="Sheet title…"
           autoFocus
         />
-        <Button size="sm" onClick={handleSave} disabled={saving || !content.trim()}>
+        <Button size="sm" onClick={handleSave} disabled={saving || !hasContent}>
           {saving ? "Saving…" : "Save"}
         </Button>
       </div>
       <div className="panel-content panel-content--idle">
-        <div className="editor-layout">
-          <div className="editor-pane">
-            <LyricEditor content={content} onChange={handleChange} />
-          </div>
-        </div>
+        <BlockLyricEditor content={lyricsContent} onChange={handleChange} />
       </div>
     </div>
   );
