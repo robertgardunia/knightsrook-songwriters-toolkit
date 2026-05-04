@@ -79,8 +79,10 @@ Generate 4 WAV test tracks and insert a "Dev Test Track" song:
 
 ```bash
 cd server
-npx tsx scripts/seed-dev.ts <clerk-user-id>
+npx tsx scripts/seed-dev.ts
 ```
+
+User ID is auto-detected from the database (sign in and create one song first). Pass a Clerk user ID as the first argument to override.
 
 Tracks: Bass (80 Hz sine), Melody (440 Hz), Harmony (523 Hz), Kick (decaying frequency burst).
 

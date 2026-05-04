@@ -78,9 +78,15 @@ const TRACKS = [
 ];
 
 async function main() {
-  const userId = process.argv[2];
+  let userId = process.argv[2];
+
   if (!userId) {
-    console.error("Usage: npx tsx scripts/seed-dev.ts <clerk-user-id>");
+    const [rows] = await pool.execute<any[]>("SELECT DISTINCT user_id FROM songs LIMIT 1");
+    userId = rows[0]?.user_id;
+  }
+
+  if (!userId) {
+    console.error("No user found in DB. Sign in to the app first, then re-run.");
     process.exit(1);
   }
 
