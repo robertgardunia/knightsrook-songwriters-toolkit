@@ -179,7 +179,7 @@ html, body, #root { height: 100%; overscroll-behavior: none; }
 .visualizer-wrap {
   height: 130px;
   flex-shrink: 0;
-  margin: 0.75rem 5px 0;
+  margin: 0 5px 0;
   /* Glass display effect */
   background:
     linear-gradient(135deg,
