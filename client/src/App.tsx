@@ -75,41 +75,28 @@ export default function App() {
 
   return (
     <div className="app">
+      {/* Corner icons live outside app-inner to avoid arc overflow:hidden clipping */}
+      <button className="chrome-icon chrome-icon--settings" onClick={() => setSettingsOpen(true)} title="Settings">
+        <IconSettings />
+      </button>
+      <div className="chrome-icon chrome-icon--auth">
+        <Show when="signed-out">
+          <button className="chrome-corner-btn" onClick={() => openSignIn()} title="Sign in">
+            <IconUser />
+          </button>
+        </Show>
+        <Show when="signed-in">
+          <div className="chrome-corner-user"><UserButton /></div>
+        </Show>
+      </div>
+
       <div className="app-inner">
         <header className="app-chrome">
-          {/* Settings — upper left ghost icon */}
-          <button
-            className="chrome-corner-btn chrome-corner-btn--left"
-            onClick={() => setSettingsOpen(true)}
-            title="Settings"
-          >
-            <IconSettings />
-          </button>
-
-          {/* Centered title */}
           {activeSong ? (
             <span className="chrome-song-title">{activeSong.title}</span>
           ) : (
             <span className="chrome-wordmark">Songwriter<br />Toolkit</span>
           )}
-
-          {/* Auth — upper right */}
-          <div className="chrome-corner-btn--right">
-            <Show when="signed-out">
-              <button
-                className="chrome-corner-btn"
-                onClick={() => openSignIn()}
-                title="Sign in"
-              >
-                <IconUser />
-              </button>
-            </Show>
-            <Show when="signed-in">
-              <div className="chrome-corner-user">
-                <UserButton />
-              </div>
-            </Show>
-          </div>
         </header>
 
         <main className="app-main">

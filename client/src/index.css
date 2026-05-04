@@ -102,9 +102,8 @@ html, body, #root { height: 100%; overscroll-behavior: none; }
 /* ── PERSISTENT CHROME ─────────────────────────────── */
 .app-chrome {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
-  padding-bottom: 0.1rem;
   height: 72px;
   flex-shrink: 0;
   position: relative;
@@ -115,19 +114,17 @@ html, body, #root { height: 100%; overscroll-behavior: none; }
 }
 
 
-/* Corner ghost buttons inside .app-chrome */
-.chrome-corner-btn--left,
-.chrome-corner-btn--right {
+/* Corner icons — positioned on .app (no overflow clipping) so arc doesn't hide them */
+.chrome-icon {
   position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
+  z-index: 60;
   display: flex;
   align-items: center;
-  z-index: 41;
 }
 
-.chrome-corner-btn--left  { left: 10px; }
-.chrome-corner-btn--right { right: 10px; }
+/* At header mid-height (top:52px), inner arc left edge ≈ x:71px; 88px clears it */
+.chrome-icon--settings { top: 52px; left: 88px; }
+.chrome-icon--auth     { top: 52px; right: 88px; }
 
 .chrome-corner-btn {
   background: none;
@@ -147,11 +144,8 @@ html, body, #root { height: 100%; overscroll-behavior: none; }
   filter: drop-shadow(0 0 5px rgba(240, 168, 48, .65));
 }
 
-/* Clerk UserButton wrapper — let it display naturally */
-.chrome-corner-user {
-  display: flex;
-  align-items: center;
-}
+/* Clerk UserButton wrapper */
+.chrome-corner-user { display: flex; align-items: center; }
 
 .chrome-wordmark {
   font-family: 'Fascinate Inline', cursive;
