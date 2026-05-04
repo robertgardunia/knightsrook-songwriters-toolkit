@@ -64,6 +64,67 @@ html, body, #root { height: 100%; overscroll-behavior: none; }
     0 -8px 18px rgba(208,64,184,.25),
     0 8px 20px rgba(0,212,200,.2),
     0 0 20px rgba(240,168,48,.12);
+  animation: neon-life 11s linear infinite;
+}
+
+@keyframes neon-life {
+  /* breathe in */
+  0% {
+    box-shadow:
+      -5px 0 14px rgba(208,64,184,.20), 5px 0 14px rgba(208,64,184,.20),
+      0 -8px 18px rgba(208,64,184,.25), 0 8px 20px rgba(0,212,200,.20),
+      0 0 20px rgba(240,168,48,.12);
+  }
+  35% {
+    box-shadow:
+      -5px 0 24px rgba(208,64,184,.50), 5px 0 24px rgba(208,64,184,.50),
+      0 -10px 30px rgba(208,64,184,.55), 0 10px 30px rgba(0,212,200,.45),
+      0 0 30px rgba(240,168,48,.28);
+  }
+  /* flicker burst */
+  55% {
+    box-shadow:
+      -5px 0 18px rgba(208,64,184,.32), 5px 0 18px rgba(208,64,184,.32),
+      0 -8px 22px rgba(208,64,184,.36), 0 8px 22px rgba(0,212,200,.30),
+      0 0 22px rgba(240,168,48,.18);
+  }
+  56.5% {
+    box-shadow:
+      -5px 0 4px rgba(208,64,184,.04), 5px 0 4px rgba(208,64,184,.04),
+      0 -4px 5px rgba(208,64,184,.05), 0 4px 6px rgba(0,212,200,.04),
+      0 0 5px rgba(240,168,48,.02);
+  }
+  57.5% {
+    box-shadow:
+      -5px 0 22px rgba(208,64,184,.42), 5px 0 22px rgba(208,64,184,.42),
+      0 -9px 26px rgba(208,64,184,.46), 0 9px 26px rgba(0,212,200,.38),
+      0 0 26px rgba(240,168,48,.22);
+  }
+  58.5% {
+    box-shadow:
+      -5px 0 4px rgba(208,64,184,.04), 5px 0 4px rgba(208,64,184,.04),
+      0 -4px 5px rgba(208,64,184,.05), 0 4px 6px rgba(0,212,200,.04),
+      0 0 5px rgba(240,168,48,.02);
+  }
+  60% {
+    box-shadow:
+      -5px 0 18px rgba(208,64,184,.30), 5px 0 18px rgba(208,64,184,.30),
+      0 -8px 20px rgba(208,64,184,.34), 0 8px 22px rgba(0,212,200,.28),
+      0 0 20px rgba(240,168,48,.16);
+  }
+  /* breathe out */
+  85% {
+    box-shadow:
+      -5px 0 8px rgba(208,64,184,.08), 5px 0 8px rgba(208,64,184,.08),
+      0 -6px 10px rgba(208,64,184,.10), 0 6px 12px rgba(0,212,200,.08),
+      0 0 12px rgba(240,168,48,.05);
+  }
+  100% {
+    box-shadow:
+      -5px 0 14px rgba(208,64,184,.20), 5px 0 14px rgba(208,64,184,.20),
+      0 -8px 18px rgba(208,64,184,.25), 0 8px 20px rgba(0,212,200,.20),
+      0 0 20px rgba(240,168,48,.12);
+  }
 }
 
 /* Inner chrome bezel — silver rings just inside the neon border, follows the arc */
