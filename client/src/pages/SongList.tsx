@@ -7,14 +7,16 @@ const SLOTS_PER_PAGE = 6;
 
 interface Props {
   onSelect: (song: Song) => void;
+  page: number;
+  onPageChange: (page: number) => void;
+  onTotalPagesChange: (total: number) => void;
 }
 
-export default function SongList({ onSelect }: Props) {
+export default function SongList({ onSelect, page, onPageChange, onTotalPagesChange }: Props) {
   const [songs, setSongs] = useState<Song[]>([]);
   const [loading, setLoading] = useState(true);
   const [addingAt, setAddingAt] = useState<number | null>(null);
   const [newTitle, setNewTitle] = useState("");
-  const [page, setPage] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -33,6 +35,10 @@ export default function SongList({ onSelect }: Props) {
   const totalPages = Math.ceil(allSlots.length / SLOTS_PER_PAGE);
   const slots = allSlots.slice(page * SLOTS_PER_PAGE, (page + 1) * SLOTS_PER_PAGE);
 
+  useEffect(() => {
+    onTotalPagesChange(totalPages);
+  }, [totalPages, onTotalPagesChange]);
+
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault();
     if (!newTitle.trim()) { setAddingAt(null); return; }
@@ -40,7 +46,7 @@ export default function SongList({ onSelect }: Props) {
     setSongs(s => [song, ...s]);
     setNewTitle("");
     setAddingAt(null);
-    setPage(0);
+    onPageChange(0);
   }
 
   async function handleDelete(id: string, e: React.MouseEvent) {
@@ -108,14 +114,6 @@ export default function SongList({ onSelect }: Props) {
             </ul>
           )}
         </div>
-
-        {totalPages > 1 && (
-          <div className="panel-nav">
-            <Button onClick={() => setPage(p => Math.max(0, p - 1))} disabled={page === 0}>‹</Button>
-            <span className="page-indicator">{page + 1} / {totalPages}</span>
-            <Button onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))} disabled={page === totalPages - 1}>›</Button>
-          </div>
-        )}
       </div>
     </div>
   );

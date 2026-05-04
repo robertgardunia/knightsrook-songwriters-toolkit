@@ -71,5 +71,6 @@ song_audio     — song_id, audio_file_id  (many-to-many join)
 - Fonts: Orbitron (display), Rajdhani (UI), Space Mono (lyrics editor)
 - Chunky touch targets (52px minimum) for 3am one-thumb use
 - Reusable `Button` component (`variant=plastic|ghost`, `size=md|sm`, `icon`) — all buttons share the same chunky ivory plastic CSS with cut-hole protrusion effect
-- Neon gradient frame (magenta → amber → teal) runs full screen height alongside header and content; 8px border with `mix-blend-mode: multiply` chrome ring overlay for cylindrical tube effect
-- Dark control bars (header, panel-toggle, panel-nav) for consistent button contrast
+- Neon gradient frame (magenta → amber → teal) wraps entire app including header; 8px border with `border-radius: 72px 72px 20px 20px`; chrome ring sheen via `::after` at z-index 1000
+- Header centered title only; all controls (Library, Settings, Back, pagination) in persistent bottom nav bar
+- Header and bottom nav clipped to inner corner radii (64px top, 12px bottom) so dark fills never cover neon corners

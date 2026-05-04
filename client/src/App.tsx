@@ -30,6 +30,8 @@ export default function App() {
   const [activeSong, setActiveSong] = useState<Song | null>(null);
   const [libraryOpen, setLibraryOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
 
   return (
     <>
@@ -41,32 +43,39 @@ export default function App() {
       <Show when="signed-in">
         <div className="app">
           <header className="app-chrome">
-            <div className="chrome-left">
-              {activeSong ? (
-                <Button onClick={() => setActiveSong(null)}>
-                  ← <span className="chrome-back__title">{activeSong.title}</span>
-                </Button>
-              ) : (
-                <span className="chrome-wordmark">Songwriter's<br />Toolkit</span>
-              )}
-            </div>
-            <div className="chrome-right">
-              <Button icon onClick={() => setLibraryOpen(true)} title="Library">
-                <IconLibrary />
-              </Button>
-              <Button icon onClick={() => setSettingsOpen(true)} title="Settings">
-                <IconSettings />
-              </Button>
-            </div>
+            {activeSong ? (
+              <span className="chrome-song-title">{activeSong.title}</span>
+            ) : (
+              <span className="chrome-wordmark">Songwriter's<br />Toolkit</span>
+            )}
           </header>
 
           <main className="app-main">
             {activeSong ? (
               <SongDetail song={activeSong} />
             ) : (
-              <SongList onSelect={setActiveSong} />
+              <SongList
+                onSelect={setActiveSong}
+                page={page}
+                onPageChange={setPage}
+                onTotalPagesChange={setTotalPages}
+              />
             )}
           </main>
+
+          <nav className="app-nav">
+            {activeSong ? (
+              <Button icon onClick={() => setActiveSong(null)} title="Back">←</Button>
+            ) : totalPages > 1 ? (
+              <>
+                <Button icon onClick={() => setPage(p => Math.max(0, p - 1))} disabled={page === 0}>‹</Button>
+                <span className="page-indicator">{page + 1} / {totalPages}</span>
+                <Button icon onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))} disabled={page === totalPages - 1}>›</Button>
+              </>
+            ) : null}
+            <Button icon onClick={() => setLibraryOpen(true)} title="Library"><IconLibrary /></Button>
+            <Button icon onClick={() => setSettingsOpen(true)} title="Settings"><IconSettings /></Button>
+          </nav>
 
           <LibraryDrawer open={libraryOpen} onClose={() => setLibraryOpen(false)} />
           <SettingsDrawer open={settingsOpen} onClose={() => setSettingsOpen(false)} />

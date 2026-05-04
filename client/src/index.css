@@ -42,70 +42,9 @@ html, body, #root { height: 100%; overscroll-behavior: none; }
   height: 100dvh;
   max-width: 480px;
   margin: 0 auto;
-}
-
-/* ── PERSISTENT CHROME ─────────────────────────────── */
-.app-chrome {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.5rem 0.75rem;
-  height: 72px;
-  flex-shrink: 0;
-  border-left: 8px solid transparent;
-  border-right: 8px solid transparent;
-  border-bottom: 2px solid #3a3a5a;
-  background:
-    linear-gradient(180deg, #252538 0%, #1a1a2a 60%, #141420 100%) padding-box,
-    var(--magenta) border-box;
-  box-shadow: inset 0 1px 0 rgba(200,200,255,.08), 0 3px 12px rgba(0,0,0,.7);
-}
-
-.chrome-left {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex: 1;
-  min-width: 0;
-}
-
-.chrome-wordmark {
-  font-family: 'Orbitron', monospace;
-  font-size: 0.75rem;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  line-height: 1.3;
-  color: var(--amber);
-  text-shadow: 0 0 8px rgba(240,168,48,.6), 0 0 20px rgba(240,168,48,.25);
-}
-
-.chrome-back__title {
-  max-width: 150px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.chrome-back__title {
-  max-width: 150px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.chrome-right { display: flex; align-items: center; gap: 0.5rem; }
-
-/* ── MAIN CONTENT AREA ─────────────────────────────── */
-.app-main {
   position: relative;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  margin: 0 0 4px;
   border: 8px solid transparent;
-  border-top: none;
-  border-radius: 0 0 20px 20px;
+  border-radius: 72px 72px 20px 20px;
   background:
     linear-gradient(var(--bg), var(--bg)) padding-box,
     linear-gradient(180deg,
@@ -122,25 +61,88 @@ html, body, #root { height: 100%; overscroll-behavior: none; }
   box-shadow:
     -5px 0 14px rgba(208,64,184,.2),
     5px 0 14px rgba(208,64,184,.2),
-    0 6px 20px rgba(0,212,200,.2),
+    0 -8px 18px rgba(208,64,184,.25),
+    0 8px 20px rgba(0,212,200,.2),
     0 0 20px rgba(240,168,48,.12);
 }
 
-.app-main::after {
+/* Chrome ring sheen — multiply over neon, highest z */
+.app::after {
   content: '';
   position: absolute;
   inset: 0;
-  border-radius: 0 0 12px 12px;
-  clip-path: inset(0 -8px -8px -8px round 0 0 12px 12px);
+  border-radius: 64px 64px 12px 12px;
+  clip-path: inset(-8px round 72px 72px 20px 20px);
   mix-blend-mode: multiply;
   pointer-events: none;
-  z-index: 10;
+  z-index: 1000;
   box-shadow:
     0 0 0 1px #c0c0c0,
     0 0 0 2px #d8d8d8,
     0 0 0 3px #eeeeee,
     0 0 0 4px #f8f8f8,
     0 0 0 5px #ffffff;
+}
+
+/* ── PERSISTENT CHROME ─────────────────────────────── */
+.app-chrome {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 72px;
+  flex-shrink: 0;
+  border-radius: 64px 64px 0 0;
+  background: linear-gradient(180deg, #252538 0%, #1a1a2a 60%, #141420 100%);
+  border-bottom: 2px solid #3a3a5a;
+  box-shadow: inset 0 1px 0 rgba(200,200,255,.08), 0 3px 12px rgba(0,0,0,.7);
+}
+
+.chrome-wordmark {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.3;
+  text-align: center;
+  color: var(--amber);
+  text-shadow: 0 0 8px rgba(240,168,48,.6), 0 0 20px rgba(240,168,48,.25);
+}
+
+.chrome-song-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text);
+  max-width: 260px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── BOTTOM NAV ────────────────────────────────────── */
+.app-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.5rem 1rem;
+  height: 60px;
+  flex-shrink: 0;
+  border-radius: 0 0 12px 12px;
+  background: linear-gradient(180deg, #141420 0%, #1a1a2a 40%, #252538 100%);
+  border-top: 2px solid #3a3a5a;
+  box-shadow: inset 0 1px 0 rgba(200,200,255,.08), 0 -3px 12px rgba(0,0,0,.6);
+}
+
+/* ── MAIN CONTENT AREA ─────────────────────────────── */
+.app-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 /* ── AUTH SCREEN ───────────────────────────────────── */
