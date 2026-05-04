@@ -24,6 +24,8 @@ export default function SongList({ onSelect, page, onPageChange, onTotalPagesCha
   const [search, setSearch] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const editRef = useRef<HTMLInputElement>(null);
+  const addSubmitRef = useRef(false);
+  const editSubmitRef = useRef(false);
 
   useEffect(() => {
     listSongs().then(setSongs).finally(() => setLoading(false));
@@ -134,6 +136,7 @@ export default function SongList({ onSelect, page, onPageChange, onTotalPagesCha
                             value={editTitle}
                             onChange={e => setEditTitle(e.target.value)}
                             onBlur={e => {
+                              if (editSubmitRef.current) { editSubmitRef.current = false; return; }
                               if (e.relatedTarget?.closest("form") === e.currentTarget.closest("form")) return;
                               setEditingId(null);
                             }}
@@ -141,8 +144,7 @@ export default function SongList({ onSelect, page, onPageChange, onTotalPagesCha
                           <Button
                             size="sm"
                             type="submit"
-                            onMouseDown={e => e.preventDefault()}
-                            onTouchStart={e => e.preventDefault()}
+                            onPointerDown={() => { editSubmitRef.current = true; }}
                           >✓</Button>
                         </form>
                       ) : isSelected ? (
@@ -172,6 +174,7 @@ export default function SongList({ onSelect, page, onPageChange, onTotalPagesCha
                           onChange={e => setNewTitle(e.target.value)}
                           placeholder="Song title…"
                           onBlur={e => {
+                            if (addSubmitRef.current) { addSubmitRef.current = false; return; }
                             if (e.relatedTarget?.closest("form") === e.currentTarget.closest("form")) return;
                             setAddingAt(null);
                             setNewTitle("");
@@ -180,8 +183,7 @@ export default function SongList({ onSelect, page, onPageChange, onTotalPagesCha
                         <Button
                           size="sm"
                           type="submit"
-                          onMouseDown={e => e.preventDefault()}
-                          onTouchStart={e => e.preventDefault()}
+                          onPointerDown={() => { addSubmitRef.current = true; }}
                         >✓</Button>
                       </form>
                     ) : !isSearching ? (
