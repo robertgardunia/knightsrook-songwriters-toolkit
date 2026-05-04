@@ -15,6 +15,8 @@ export const createSong = (title: string) =>
   apiFetch<Song>("/songs", { method: "POST", body: JSON.stringify({ title }) });
 export const deleteSong = (id: string) =>
   apiFetch<null>(`/songs/${id}`, { method: "DELETE" });
+export const updateSong = (id: string, title: string) =>
+  apiFetch<Song>(`/songs/${id}`, { method: "PATCH", body: JSON.stringify({ title }) });
 
 export const getLyrics = (songId: string) =>
   apiFetch<{ content: string }>(`/songs/${songId}/lyrics`);

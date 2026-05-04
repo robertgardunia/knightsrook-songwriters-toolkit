@@ -61,7 +61,7 @@ export default function App() {
               {activeSong ? (
                 <span className="chrome-song-title">{activeSong.title}</span>
               ) : (
-                <span className="chrome-wordmark">Songwriter Toolkit</span>
+                <span className="chrome-wordmark">Songwriter<br />Toolkit</span>
               )}
             </header>
 

@@ -45,6 +45,30 @@ router.post("/", async (req, res, next) => {
   }
 });
 
+router.patch("/:id", async (req, res, next) => {
+  try {
+    const userId = req.auth.userId;
+    const { id } = req.params;
+    const { title } = req.body as { title?: string };
+    if (!title || typeof title !== "string" || !title.trim()) {
+      res.status(400).json({ success: false, error: "title is required" });
+      return;
+    }
+    const [result] = await pool.execute(
+      "UPDATE songs SET title = ? WHERE id = ? AND user_id = ?",
+      [title.trim(), id, userId]
+    );
+    const affected = (result as { affectedRows: number }).affectedRows;
+    if (affected === 0) {
+      res.status(404).json({ success: false, error: "Song not found" });
+      return;
+    }
+    res.json({ success: true, data: { id, title: title.trim() } });
+  } catch (err) {
+    next(err);
+  }
+});
+
 router.delete("/:id", async (req, res, next) => {
   try {
     const userId = req.auth.userId;

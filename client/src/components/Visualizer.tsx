@@ -6,12 +6,14 @@ export type VizType = 'bars' | 'scope' | 'vu' | 'dots' | 'radial';
 
 interface Props {
   type: VizType;
+  active?: boolean;
 }
 
-export default function Visualizer({ type }: Props) {
+export default function Visualizer({ type, active = false }: Props) {
   const ref = useRef<HTMLCanvasElement>(null);
   const raf = useRef(0);
   const typeRef = useRef(type);
+  const activeRef = useRef(active);
   const bars = useRef(
     Array.from({ length: BARS }, (_, i) => ({
       v: 0.1 + Math.random() * 0.4,
@@ -21,6 +23,7 @@ export default function Visualizer({ type }: Props) {
   );
 
   useEffect(() => { typeRef.current = type; }, [type]);
+  useEffect(() => { activeRef.current = active; }, [active]);
 
   useEffect(() => {
     const canvas = ref.current!;
@@ -42,6 +45,12 @@ export default function Visualizer({ type }: Props) {
 
       ctx.clearRect(0, 0, W, H);
 
+      if (!activeRef.current) {
+        drawIdle(ctx, W, H);
+        raf.current = requestAnimationFrame(draw);
+        return;
+      }
+
       b.forEach((bar) => {
         bar.t = 0.08 + 0.78 * Math.abs(Math.sin(tick * 0.022 + bar.p));
         bar.v += (bar.t - bar.v) * 0.07;
@@ -58,6 +67,17 @@ export default function Visualizer({ type }: Props) {
       raf.current = requestAnimationFrame(draw);
     };
 
+    function drawIdle(ctx: CanvasRenderingContext2D, W: number, H: number) {
+      const bw = W / BARS;
+      const gap = Math.max(1, bw * 0.22);
+      for (let i = 2; i < BARS - 2; i++) {
+        const x = i * bw + gap / 2;
+        const w = bw - gap;
+        ctx.fillStyle = 'rgba(208,64,184,.18)';
+        ctx.fillRect(x, H - 3, w, 3);
+      }
+    }
+
     function drawBars(ctx: CanvasRenderingContext2D, W: number, H: number) {
       const bw = W / BARS;
       const gap = Math.max(1, bw * 0.22);
@@ -67,19 +87,12 @@ export default function Visualizer({ type }: Props) {
         const h = bar.v * H;
         const y = H - h;
         const w = bw - gap;
-        const hot = bar.v > 0.65;
-        const mid = bar.v > 0.35;
-        const color = hot ? "rgba(0,212,200,.95)" : mid ? "rgba(245,196,48,.9)" : "rgba(208,64,184,.85)";
-        const glow  = hot ? "rgba(0,212,200,.65)" : mid ? "rgba(240,168,48,.55)" : "rgba(208,64,184,.55)";
-        const g = ctx.createLinearGradient(0, y, 0, H);
-        g.addColorStop(0, color);
-        g.addColorStop(1, "rgba(20,10,30,.12)");
-        ctx.save();
-        ctx.shadowBlur = 14;
-        ctx.shadowColor = glow;
+        const g = ctx.createLinearGradient(0, H, 0, 0);
+        g.addColorStop(0,   'rgba(208,64,184,.95)');
+        g.addColorStop(0.4, 'rgba(245,196,48,.9)');
+        g.addColorStop(1,   'rgba(0,212,200,.95)');
         ctx.fillStyle = g;
         ctx.fillRect(x, y, w, h);
-        ctx.restore();
       });
     }
 

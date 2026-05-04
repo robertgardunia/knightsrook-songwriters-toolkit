@@ -41,12 +41,12 @@ npm run dev   # starts on http://localhost:5173, proxies /api → http://localho
 
 ## Screens
 
-- **Home** — jukebox-style title card panel + audio visualizer. Fixed 10 slots; empty slots are tappable to create a new song.
+- **Home** — jukebox-style title card panel + audio visualizer + chrome search bar. Tap a filled slot to select it, revealing **Lyrics** (navigate to song) and **Edit** (rename inline) buttons. Empty slots tap to create. Tapping a selected song deselects it.
 - **Song** — full song experience with flip panel between **Lyrics** (Tiptap editor + Word Assistant) and **Mixer** (placeholder).
 - **Library** — audio file manager (slide-in drawer). Files persist independently of songs.
 - **Settings** — account + preferences (slide-in drawer).
 
-Chrome (Library, Settings, and visualizer cycle icons) is persistent across all screens. Tapping the bar-chart icon cycles through 5 visualizer types: bars, scope, VU meters, dot matrix, radial.
+Chrome (Library, Settings, and visualizer cycle icons) is persistent across all screens. Tapping the bar-chart icon cycles through 5 visualizer types: bars, scope, VU meters, dot matrix, radial. Visualizer is idle (static) until a song is playing.
 
 ## Architecture
 
@@ -58,7 +58,7 @@ Chrome (Library, Settings, and visualizer cycle icons) is persistent across all 
 ## Data model
 
 ```
-songs          — id, user_id, title
+songs          — id, user_id, title  (PATCH /:id renames title)
 lyrics         — id, song_id, content
 audio_files    — id, user_id, filename, original_name, mime_type, duration_ms, size_bytes
 song_audio     — song_id, audio_file_id  (many-to-many join, files survive song deletion)
