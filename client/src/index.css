@@ -122,17 +122,15 @@ html, body, #root { height: 100%; overscroll-behavior: none; }
   align-items: center;
 }
 
-/* At header mid-height (top:52px), inner arc left edge ≈ x:71px; 88px clears it */
-.chrome-icon--settings { top: 52px; left: 88px; }
-.chrome-icon--auth     { top: 52px; right: 88px; }
+.chrome-icon--settings { top: 20px; left: 20px; }
+.chrome-icon--auth     { top: 20px; right: 20px; }
 
 .chrome-corner-btn {
   background: none;
   border: none;
   cursor: pointer;
-  padding: 0.4rem;
-  border-radius: 8px;
-  color: rgba(40, 40, 60, 0.38);
+  padding: 0;
+  color: rgba(255, 255, 255, 0.35);
   display: inline-flex;
   align-items: center;
   justify-content: center;
