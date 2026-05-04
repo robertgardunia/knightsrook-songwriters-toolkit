@@ -1031,6 +1031,102 @@ html, body, #root { height: 100%; overscroll-behavior: none; }
   20%, 22%, 24%, 55% { opacity: 0.75; }
 }
 
+/* ── LYRICS LIBRARY ────────────────────────────────── */
+.lyrics-library {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 0 0 12px 12px;
+  background: var(--bg);
+}
+
+.lyrics-library__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(180deg, #252538 0%, #1a1a2a 60%, #141420 100%);
+  box-shadow: inset 0 1px 0 rgba(200,200,255,.08), 0 2px 8px rgba(0,0,0,.5);
+  flex-shrink: 0;
+}
+
+.lyrics-library__label {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  color: var(--amber);
+  filter: drop-shadow(0 0 4px rgba(240,168,48,.9)) drop-shadow(0 0 12px rgba(240,168,48,.5));
+}
+
+.lyrics-list {
+  list-style: none;
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.5rem 0;
+}
+
+.lyrics-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--chrome-hi);
+  cursor: pointer;
+  transition: background .15s;
+}
+
+.lyrics-item:last-child { border-bottom: none; }
+
+.lyrics-item:hover, .lyrics-item:active {
+  background: rgba(240,168,48,.05);
+}
+
+.lyrics-item__title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lyrics-item__date {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  flex-shrink: 0;
+  margin-left: 0.75rem;
+}
+
+.lyrics-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  color: var(--text-dim);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.8rem;
+  font-style: italic;
+}
+
+/* ── DELETE CONFIRMATION (SongList) ─────────────────── */
+.title-card__confirm-msg {
+  flex: 1;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--red);
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* ── DESKTOP ───────────────────────────────────────── */
 @media (min-width: 640px) {
   .app { max-width: 540px; }

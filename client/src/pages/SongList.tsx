@@ -23,6 +23,7 @@ export default function SongList({ onSelect, page, onPageChange, onTotalPagesCha
   const [selectedSong, setSelectedSong] = useState<Song | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState("");
+  const [confirmingDelete, setConfirmingDelete] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -76,9 +77,19 @@ export default function SongList({ onSelect, page, onPageChange, onTotalPagesCha
 
   async function handleDelete(id: string, e: React.MouseEvent) {
     e.stopPropagation();
+    if (confirmingDelete !== id) {
+      setConfirmingDelete(id);
+      return;
+    }
+    setConfirmingDelete(null);
     await deleteSong(id);
     setSongs(s => s.filter(x => x.id !== id));
     if (selectedSong?.id === id) setSelectedSong(null);
+  }
+
+  function cancelDelete(e: React.MouseEvent) {
+    e.stopPropagation();
+    setConfirmingDelete(null);
   }
 
   async function handleRename(id: string, e: React.FormEvent) {
@@ -177,6 +188,12 @@ export default function SongList({ onSelect, page, onPageChange, onTotalPagesCha
                           <span className="title-card__title title-card__title--selected">{song.title}</span>
                           <Button size="sm" onClick={() => onSelect(song)}>Lyrics</Button>
                           <Button size="sm" onClick={() => startEdit(song)}>Edit</Button>
+                        </>
+                      ) : confirmingDelete === song.id ? (
+                        <>
+                          <span className="title-card__confirm-msg">Delete? Lyrics preserved.</span>
+                          <Button size="sm" onClick={e => handleDelete(song.id, e)}>Yes</Button>
+                          <Button variant="ghost" size="sm" onClick={cancelDelete}>No</Button>
                         </>
                       ) : (
                         <>

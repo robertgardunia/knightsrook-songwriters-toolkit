@@ -41,23 +41,26 @@ npm run dev   # starts on http://localhost:5173, proxies /api → http://localho
 
 ## Screens
 
-- **Home** — jukebox-style title card panel + audio visualizer + chrome search bar. Tap a filled slot to select it, revealing **Lyrics** (navigate to song) and **Edit** (rename inline) buttons. Empty slots tap to create. Tapping a selected song deselects it.
-- **Song** — full song experience with flip panel between **Lyrics** (Tiptap editor + Word Assistant) and **Mixer** (placeholder).
+- **Home** — jukebox-style title card panel + audio visualizer + chrome search bar. Tap a filled slot to select it, revealing **Lyrics** (navigate to song) and **Edit** (rename inline) buttons. Empty slots tap to create. Tapping a selected song deselects it. Deleting a song shows an inline confirmation; message notes that lyrics will be preserved.
+- **Song** — full song experience with flip panel between **Lyrics** (Tiptap editor + Word Assistant) and **Mixer**. Lyrics panel loads the first associated lyrics sheet; shows a "Write Lyrics" button if none exist yet.
+- **Lyrics Library** — standalone list of all lyrics sheets (title + last-updated date). Accessible via the Lyrics nav button when no song is active. Tap a sheet to open it in the editor. "New Sheet" button creates a fresh sheet.
+- **Lyrics Detail** — standalone editor for a lyrics sheet (not tied to a song). Editable title + Tiptap editor + Save button.
 - **Library** — audio file manager (slide-in drawer). Files persist independently of songs.
 - **Settings** — account + preferences (slide-in drawer).
 
 Chrome is persistent across all screens:
-- **Bottom nav**: prev/next chevrons (disabled at page limits), visualizer cycle, Lyrics button (disabled unless a song is active), Library, Settings
+- **Bottom nav**: prev/next chevrons (disabled at page limits), visualizer cycle, Lyrics button, Library, Settings
 - Tapping the bar-chart icon cycles through 5 visualizer types: bars, scope, VU meters, dot matrix, radial
-- Lyrics nav button: with active song → jumps to lyrics panel; without a song → opens a blank editor that creates a new song on save
+- Lyrics nav button: with active song → jumps to lyrics panel; without a song → opens Lyrics Library
+- Back button navigates: Song Detail → Home; Lyrics Detail → Lyrics Library; Lyrics Library → Home; New Sheet → Lyrics Library
 - Visualizer is idle (static) until a song is playing
 - Account management (sign in / manage profile) lives inside the Settings drawer
 
 ## Architecture
 
-- Songs are the primary object. Each song has lyrics and can reference multiple audio files.
+- Songs and lyrics are both first-class independent objects. Lyrics survive song deletion.
 - Audio files are stored independently (`audio_files` table). Many-to-many with songs via `song_audio` join table. Files survive song deletion.
-- Lyrics sync via server/MySQL.
+- Lyrics are stored independently (`lyrics` table with `user_id`). Many-to-many with songs via `song_lyrics` join table. Lyrics survive song deletion.
 - Audio files uploaded via `multer` to `server/uploads/`; served unauthenticated at `/api/audio/file/:filename` (UUID filenames are unguessable).
 
 ## Audio engine
@@ -94,9 +97,38 @@ All API routes require a valid Clerk session. The client obtains a JWT via `useA
 
 ```
 songs          — id, user_id, title  (PATCH /:id renames title)
-lyrics         — id, song_id, content
+lyrics         — id, user_id, title, content  (first-class; survives song deletion)
+song_lyrics    — song_id, lyrics_id  (many-to-many join, lyrics survive song deletion)
 audio_files    — id, user_id, filename, original_name, mime_type, duration_ms, size_bytes
 song_audio     — song_id, audio_file_id  (many-to-many join, files survive song deletion)
+```
+
+### Migration
+
+If you have existing data in the old `lyrics` schema (which had `song_id` instead of `user_id`):
+
+```bash
+cd server
+npx tsx scripts/migrate-lyrics.ts
+```
+
+Then run the schema changes (add columns, create `song_lyrics` table) and finally drop the old `song_id` column:
+
+```sql
+ALTER TABLE lyrics
+  ADD COLUMN user_id VARCHAR(255) NOT NULL DEFAULT '' AFTER id,
+  ADD COLUMN title VARCHAR(255) NOT NULL DEFAULT 'Untitled' AFTER user_id,
+  ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP AFTER content;
+
+CREATE TABLE IF NOT EXISTS song_lyrics (
+  song_id   VARCHAR(36) NOT NULL REFERENCES songs(id) ON DELETE CASCADE,
+  lyrics_id VARCHAR(36) NOT NULL REFERENCES lyrics(id) ON DELETE CASCADE,
+  PRIMARY KEY (song_id, lyrics_id),
+  added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- After running migrate-lyrics.ts and confirming results:
+ALTER TABLE lyrics DROP COLUMN song_id;
 ```
 
 ## UI

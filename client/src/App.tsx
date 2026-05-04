@@ -2,10 +2,12 @@ import { useState, useEffect } from "react";
 import SongList from "./pages/SongList";
 import SongDetail from "./pages/SongDetail";
 import NewLyrics from "./pages/NewLyrics";
+import LyricsLibrary from "./pages/LyricsLibrary";
+import LyricsDetail from "./pages/LyricsDetail";
 import LibraryDrawer from "./components/LibraryDrawer";
 import SettingsDrawer from "./components/SettingsDrawer";
 import Button from "./components/Button";
-import type { Song } from "./lib/api";
+import type { Song, Lyrics } from "./lib/api";
 import { type VizType } from "./components/Visualizer";
 
 const VIZ_TYPES: VizType[] = ['bars', 'scope', 'vu', 'dots', 'radial'];
@@ -71,6 +73,8 @@ function IconLyrics() {
 export default function App() {
   const [activeSong, setActiveSong] = useState<Song | null>(null);
   const [panel, setPanel] = useState<Panel>("lyrics");
+  const [lyricsMode, setLyricsMode] = useState(false);
+  const [activeLyrics, setActiveLyrics] = useState<Lyrics | null>(null);
   const [freshLyrics, setFreshLyrics] = useState(false);
   const [libraryOpen, setLibraryOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -81,7 +85,6 @@ export default function App() {
   useEffect(() => { setPanel("lyrics"); }, [activeSong?.id]);
 
   function selectSong(song: Song | null) {
-    setFreshLyrics(false);
     setActiveSong(song);
   }
 
@@ -89,26 +92,42 @@ export default function App() {
     if (activeSong) {
       setPanel("lyrics");
     } else {
-      setFreshLyrics(true);
+      setLyricsMode(true);
     }
   }
 
   function handleBack() {
-    if (freshLyrics) {
-      setFreshLyrics(false);
-    } else {
+    if (activeSong) {
       selectSong(null);
+    } else if (lyricsMode && freshLyrics) {
+      setFreshLyrics(false);
+    } else if (lyricsMode && activeLyrics) {
+      setActiveLyrics(null);
+    } else if (lyricsMode) {
+      setLyricsMode(false);
     }
   }
+
+  const showBack = !!(activeSong || lyricsMode);
+
+  function headerTitle() {
+    if (activeSong) return activeSong.title;
+    if (lyricsMode) {
+      if (freshLyrics) return "New Sheet";
+      if (activeLyrics) return activeLyrics.title;
+      return "Lyrics";
+    }
+    return null; // shows wordmark
+  }
+
+  const title = headerTitle();
 
   return (
     <div className="app">
       <div className="app-inner">
         <header className="app-chrome">
-          {activeSong ? (
-            <span className="chrome-song-title">{activeSong.title}</span>
-          ) : freshLyrics ? (
-            <span className="chrome-song-title">New Song</span>
+          {title ? (
+            <span className="chrome-song-title">{title}</span>
           ) : (
             <span className="chrome-wordmark">Songwriter<br />Toolkit</span>
           )}
@@ -122,8 +141,20 @@ export default function App() {
               panel={panel}
               onPanelChange={setPanel}
             />
-          ) : freshLyrics ? (
-            <NewLyrics onSaved={song => { setFreshLyrics(false); setActiveSong(song); }} />
+          ) : lyricsMode && activeLyrics ? (
+            <LyricsDetail
+              lyrics={activeLyrics}
+              onBack={() => setActiveLyrics(null)}
+            />
+          ) : lyricsMode && freshLyrics ? (
+            <NewLyrics
+              onSaved={l => { setFreshLyrics(false); setActiveLyrics(l); }}
+            />
+          ) : lyricsMode ? (
+            <LyricsLibrary
+              onSelect={setActiveLyrics}
+              onNew={() => setFreshLyrics(true)}
+            />
           ) : (
             <SongList
               onSelect={selectSong}
@@ -138,7 +169,7 @@ export default function App() {
 
       <nav className="app-nav">
         <div className="nav-left">
-          {activeSong || freshLyrics
+          {showBack
             ? <Button icon onClick={handleBack} title="Back"><IconChevronLeft /></Button>
             : <Button icon onClick={() => setPage(p => Math.max(0, p - 1))} disabled={page === 0} title="Previous page"><IconChevronLeft /></Button>
           }
@@ -152,7 +183,7 @@ export default function App() {
         <div className="nav-right">
           <Button icon
             onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
-            disabled={!!activeSong || page === totalPages - 1}
+            disabled={!!activeSong || lyricsMode || page === totalPages - 1}
             title="Next page"
           ><IconChevronRight /></Button>
         </div>

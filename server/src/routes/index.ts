@@ -4,6 +4,7 @@ import path from "path";
 import { requireUser } from "../middleware/auth.js";
 import songsRouter from "./songs.js";
 import lyricsRouter from "./lyrics.js";
+import songLyricsRouter from "./songLyrics.js";
 import audioRouter, { uploadDir } from "./audio.js";
 import aiRouter from "./ai.js";
 
@@ -19,7 +20,8 @@ router.use("/audio/file", express.static(uploadDir));
 router.use(requireUser);
 
 router.use("/songs", songsRouter);
-router.use("/songs/:id/lyrics", lyricsRouter);
+router.use("/lyrics", lyricsRouter);
+router.use("/songs/:id/lyrics", songLyricsRouter);
 router.use("/songs/:id/audio", audioRouter);
 router.use("/ai", aiRouter);
 

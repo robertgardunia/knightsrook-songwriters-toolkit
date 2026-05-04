@@ -29,13 +29,43 @@ export const deleteSong = (id: string) =>
 export const updateSong = (id: string, title: string) =>
   apiFetch<Song>(`/songs/${id}`, { method: "PATCH", body: JSON.stringify({ title }) });
 
-export const getLyrics = (songId: string) =>
-  apiFetch<{ content: string }>(`/songs/${songId}/lyrics`);
-export const saveLyrics = (songId: string, content: string) =>
-  apiFetch<{ content: string }>(`/songs/${songId}/lyrics`, {
-    method: "PUT",
-    body: JSON.stringify({ content }),
+export type Lyrics = {
+  id: string;
+  title: string;
+  content: string;
+  created_at?: string;
+  updated_at?: string;
+};
+
+export const listLyrics = () => apiFetch<Lyrics[]>("/lyrics");
+export const createLyrics = (title: string, content?: string) =>
+  apiFetch<Lyrics>("/lyrics", {
+    method: "POST",
+    body: JSON.stringify({ title, content: content ?? "" }),
   });
+export const getLyricsById = (id: string) => apiFetch<Lyrics>(`/lyrics/${id}`);
+export const saveLyrics = (id: string, content: string, title?: string) =>
+  apiFetch<Lyrics>(`/lyrics/${id}`, {
+    method: "PUT",
+    body: JSON.stringify({ content, ...(title !== undefined ? { title } : {}) }),
+  });
+export const deleteLyrics = (id: string) =>
+  apiFetch<null>(`/lyrics/${id}`, { method: "DELETE" });
+
+export const getSongLyrics = (songId: string) =>
+  apiFetch<Lyrics[]>(`/songs/${songId}/lyrics`);
+export const associateLyrics = (songId: string, lyricsId: string) =>
+  apiFetch<null>(`/songs/${songId}/lyrics`, {
+    method: "POST",
+    body: JSON.stringify({ lyricsId }),
+  });
+export const createAndAssociateLyrics = (songId: string, title: string, content: string) =>
+  apiFetch<Lyrics>(`/songs/${songId}/lyrics`, {
+    method: "POST",
+    body: JSON.stringify({ title, content }),
+  });
+export const disassociateLyrics = (songId: string, lyricsId: string) =>
+  apiFetch<null>(`/songs/${songId}/lyrics/${lyricsId}`, { method: "DELETE" });
 
 export const getAssist = (word: string, type: "rhymes" | "synonyms") =>
   apiFetch<string[]>("/ai/assist", {

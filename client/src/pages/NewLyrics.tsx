@@ -1,10 +1,10 @@
 import { useState, useCallback } from "react";
-import { createSong, saveLyrics, type Song } from "../lib/api";
+import { createLyrics, type Lyrics } from "../lib/api";
 import LyricEditor from "../components/LyricEditor";
 import Button from "../components/Button";
 
 interface Props {
-  onSaved: (song: Song) => void;
+  onSaved: (lyrics: Lyrics) => void;
 }
 
 export default function NewLyrics({ onSaved }: Props) {
@@ -18,9 +18,8 @@ export default function NewLyrics({ onSaved }: Props) {
     const t = title.trim() || "Untitled";
     setSaving(true);
     try {
-      const song = await createSong(t);
-      await saveLyrics(song.id, content);
-      onSaved(song);
+      const lyrics = await createLyrics(t, content);
+      onSaved(lyrics);
     } finally {
       setSaving(false);
     }
@@ -33,7 +32,7 @@ export default function NewLyrics({ onSaved }: Props) {
           className="new-lyrics-title"
           value={title}
           onChange={e => setTitle(e.target.value)}
-          placeholder="Song title…"
+          placeholder="Sheet title…"
           autoFocus
         />
         <Button size="sm" onClick={handleSave} disabled={saving || !content.trim()}>

@@ -9,11 +9,24 @@ CREATE TABLE IF NOT EXISTS songs (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
+-- Lyrics are user-owned first-class objects, independent of songs.
+-- They persist even if all associated songs are deleted.
 CREATE TABLE IF NOT EXISTS lyrics (
   id VARCHAR(36) PRIMARY KEY,
-  song_id VARCHAR(36) NOT NULL REFERENCES songs(id) ON DELETE CASCADE,
+  user_id VARCHAR(255) NOT NULL,
+  title VARCHAR(255) NOT NULL DEFAULT 'Untitled',
   content TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Many-to-many: a lyrics sheet can be associated with multiple songs,
+-- a song can have multiple lyrics sheets.
+CREATE TABLE IF NOT EXISTS song_lyrics (
+  song_id VARCHAR(36) NOT NULL REFERENCES songs(id) ON DELETE CASCADE,
+  lyrics_id VARCHAR(36) NOT NULL REFERENCES lyrics(id) ON DELETE CASCADE,
+  PRIMARY KEY (song_id, lyrics_id),
+  added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Audio files are user-owned and stored independently.
