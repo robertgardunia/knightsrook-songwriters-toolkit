@@ -134,8 +134,8 @@ export default function Visualizer({ type }: Props) {
       const cols = 20, rows = 8;
       const dw = W / cols, dh = H / rows;
       for (let r = 0; r < rows; r++) {
-        for (let c = 0; c < cols; c++) {
-          const bi = Math.min(Math.floor(c / cols * (BARS - 4)) + 2, BARS - 3);
+        for (let c = 1; c < cols - 1; c++) {
+          const bi = Math.min(Math.floor((c - 1) / (cols - 2) * (BARS - 4)) + 2, BARS - 3);
           const active = b[bi].v > 1 - (r + 1) / rows;
           const hot = active && b[bi].v > 0.6;
           ctx.save();

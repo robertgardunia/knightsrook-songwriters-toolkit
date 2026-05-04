@@ -144,8 +144,8 @@ html, body, #root { height: 100%; overscroll-behavior: none; }
 }
 
 /* Nav buttons 20% smaller than default 52px */
-.app-nav .btn--icon { --_h: 42px; min-height: 42px; }
-.app-nav .btn--md   { min-height: 42px; padding: 0.6rem 1.2rem; font-size: 0.62rem; }
+.app-nav .btn--icon.btn--md { --_h: 42px; min-height: 42px; min-width: 42px; }
+.app-nav .btn--md { min-height: 42px; padding: 0.6rem 1.2rem; font-size: 0.62rem; }
 
 /* ── MAIN CONTENT AREA ─────────────────────────────── */
 .app-main {
