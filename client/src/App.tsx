@@ -6,6 +6,9 @@ import LibraryDrawer from "./components/LibraryDrawer";
 import SettingsDrawer from "./components/SettingsDrawer";
 import Button from "./components/Button";
 import type { Song } from "./lib/api";
+import { type VizType } from "./components/Visualizer";
+
+const VIZ_TYPES: VizType[] = ['bars', 'scope', 'vu', 'dots', 'radial'];
 
 function IconLibrary() {
   return (
@@ -13,6 +16,16 @@ function IconLibrary() {
       <path d="M9 18V5l12-2v13" />
       <circle cx="6" cy="18" r="3" />
       <circle cx="18" cy="16" r="3" />
+    </svg>
+  );
+}
+
+function IconBarChart() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="12" width="4" height="8" />
+      <rect x="10" y="7" width="4" height="13" />
+      <rect x="17" y="3" width="4" height="17" />
     </svg>
   );
 }
@@ -32,6 +45,7 @@ export default function App() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
+  const [vizIdx, setVizIdx] = useState(0);
 
   return (
     <>
@@ -60,6 +74,7 @@ export default function App() {
                   page={page}
                   onPageChange={setPage}
                   onTotalPagesChange={setTotalPages}
+                  vizType={VIZ_TYPES[vizIdx]}
                 />
               )}
             </main>
@@ -75,6 +90,7 @@ export default function App() {
                 <Button icon onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))} disabled={page === totalPages - 1}>›</Button>
               </>
             ) : null}
+            <Button icon onClick={() => setVizIdx(i => (i + 1) % VIZ_TYPES.length)} title="Cycle visualizer"><IconBarChart /></Button>
             <Button icon onClick={() => setLibraryOpen(true)} title="Library"><IconLibrary /></Button>
             <Button icon onClick={() => setSettingsOpen(true)} title="Settings"><IconSettings /></Button>
           </nav>

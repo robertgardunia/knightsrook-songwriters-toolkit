@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { listSongs, createSong, deleteSong, type Song } from "../lib/api";
-import Visualizer from "../components/Visualizer";
+import Visualizer, { type VizType } from "../components/Visualizer";
 import Button from "../components/Button";
 
 const SLOTS_PER_PAGE = 6;
@@ -10,9 +10,10 @@ interface Props {
   page: number;
   onPageChange: (page: number) => void;
   onTotalPagesChange: (total: number) => void;
+  vizType: VizType;
 }
 
-export default function SongList({ onSelect, page, onPageChange, onTotalPagesChange }: Props) {
+export default function SongList({ onSelect, page, onPageChange, onTotalPagesChange, vizType }: Props) {
   const [songs, setSongs] = useState<Song[]>([]);
   const [loading, setLoading] = useState(true);
   const [addingAt, setAddingAt] = useState<number | null>(null);
@@ -58,7 +59,7 @@ export default function SongList({ onSelect, page, onPageChange, onTotalPagesCha
   return (
     <div className="home">
       <div className="visualizer-wrap">
-        <Visualizer />
+        <Visualizer type={vizType} />
       </div>
 
       <div className="panel-section">

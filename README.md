@@ -46,7 +46,7 @@ npm run dev   # starts on http://localhost:5173, proxies /api → http://localho
 - **Library** — audio file manager (slide-in drawer). Files persist independently of songs.
 - **Settings** — account + preferences (slide-in drawer).
 
-Chrome (Library + Settings icons) is persistent across all screens.
+Chrome (Library, Settings, and visualizer cycle icons) is persistent across all screens. Tapping the bar-chart icon cycles through 5 visualizer types: bars, scope, VU meters, dot matrix, radial.
 
 ## Architecture
 
