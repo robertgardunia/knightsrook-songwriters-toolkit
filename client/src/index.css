@@ -58,17 +58,26 @@ html, body, #root { height: 100%; overscroll-behavior: none; }
   background:
     linear-gradient(var(--bg), var(--bg)) padding-box,
     conic-gradient(from var(--neon-angle),
-      var(--magenta)      0deg,
-      var(--magenta)     52deg,
-      var(--amber-dim)   60deg,
-      var(--amber)       68deg,
-      var(--amber)      172deg,
-      var(--teal-dim)   180deg,
-      var(--teal)       188deg,
-      var(--teal)       292deg,
-      var(--magenta-dim)300deg,
-      var(--magenta)    308deg,
-      var(--magenta)    360deg) border-box;
+      var(--magenta)       0deg,
+      var(--magenta)      22deg,
+      var(--amber-dim)    30deg,
+      var(--amber)        38deg,
+      var(--amber)        82deg,
+      var(--teal-dim)     90deg,
+      var(--teal)         98deg,
+      var(--teal)        142deg,
+      var(--magenta-dim) 150deg,
+      var(--magenta)     158deg,
+      var(--magenta)     202deg,
+      var(--amber-dim)   210deg,
+      var(--amber)       218deg,
+      var(--amber)       262deg,
+      var(--teal-dim)    270deg,
+      var(--teal)        278deg,
+      var(--teal)        322deg,
+      var(--magenta-dim) 330deg,
+      var(--magenta)     338deg,
+      var(--magenta)     360deg) border-box;
   animation: neon-rotate 60s linear infinite;
 }
 
@@ -351,7 +360,6 @@ html, body, #root { height: 100%; overscroll-behavior: none; }
   filter:
     drop-shadow(0 0 4px rgba(240,168,48,.9))
     drop-shadow(0 0 12px rgba(240,168,48,.5));
-  animation: flicker 6s infinite;
 }
 
 .jukebox-panel__loading {
