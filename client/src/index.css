@@ -1205,26 +1205,70 @@ html, body, #root { height: 100%; overscroll-behavior: none; }
   height: 100%;
   overflow: hidden;
   border-radius: 0 0 12px 12px;
-  background: var(--bg);
 }
 
-.lyrics-library__header {
+/* Zone 1: fills the arched top area — same height as the visualizer */
+.lyrics-library__top {
+  height: 130px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  background:
+    linear-gradient(135deg, rgba(100,120,255,.06) 0%, rgba(0,0,0,0) 50%, rgba(0,212,200,.03) 100%),
+    #0a0a14;
+  border: 2px solid #2a2a3e;
+  border-radius: 8px 8px 0 0;
+  margin: 0 5px;
+  box-shadow: inset 0 0 30px rgba(0,0,0,.8), 0 0 0 1px rgba(240,168,48,.08);
+  overflow: hidden;
+}
+
+.lyrics-library__count {
+  font-family: 'Orbitron', monospace;
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: var(--teal);
+  filter: drop-shadow(0 0 12px rgba(0,212,200,.6));
+  line-height: 1;
+}
+
+.lyrics-library__count-label {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.52rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--teal-dim);
+}
+
+/* Zone 2: chrome strip — mirrors .search-bar */
+.lyrics-library__bar {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.75rem 1rem;
-  background: linear-gradient(180deg, #252538 0%, #1a1a2a 60%, #141420 100%);
-  box-shadow: inset 0 1px 0 rgba(200,200,255,.08), 0 2px 8px rgba(0,0,0,.5);
-  flex-shrink: 0;
+  padding: 0.35rem 0.75rem;
+  background: linear-gradient(to bottom,
+    #baa0a0 0%, #baa4b6 10%, #cec5d8 20%, #faf9ee 27%, #f6ebf2 33%,
+    #a9bdd0 44%, #909eb9 55%, #8b90b7 67%, #a898bb 79%, #b4b9cd 91%, #baa0a0 99%);
 }
 
-.lyrics-library__label {
+.lyrics-library__bar-label {
   font-family: 'Orbitron', monospace;
-  font-size: 0.55rem;
+  font-size: 0.52rem;
   font-weight: 700;
-  letter-spacing: 0.25em;
-  color: var(--amber);
-  filter: drop-shadow(0 0 4px rgba(240,168,48,.9)) drop-shadow(0 0 12px rgba(240,168,48,.5));
+  letter-spacing: 0.2em;
+  color: #4a4a5a;
+}
+
+/* Zone 3: scrollable list */
+.lyrics-library__body {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .lyrics-list {

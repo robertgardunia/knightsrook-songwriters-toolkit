@@ -28,29 +28,37 @@ export default function LyricsLibrary({ onSelect, onNew }: Props) {
 
   return (
     <div className="lyrics-library">
-      <div className="lyrics-library__header">
-        <span className="lyrics-library__label">LYRICS SHEETS</span>
+      {/* Top section — fills the arched zone the same way the visualizer does on the home screen */}
+      <div className="lyrics-library__top">
+        <span className="lyrics-library__count">
+          {loading ? "—" : sheets.length}
+        </span>
+        <span className="lyrics-library__count-label">sheets</span>
+      </div>
+
+      {/* Chrome strip — sits at the arch boundary, mirrors search-bar on home screen */}
+      <div className="lyrics-library__bar">
+        <span className="lyrics-library__bar-label">LYRICS SHEETS</span>
         <Button size="sm" onClick={onNew}>+ New Sheet</Button>
       </div>
 
-      {loading ? (
-        <div className="lyrics-empty">Loading…</div>
-      ) : sheets.length === 0 ? (
-        <div className="lyrics-empty">No lyrics yet. Tap <strong>+ New Sheet</strong> to write.</div>
-      ) : (
-        <ul className="lyrics-list">
-          {sheets.map(l => (
-            <li
-              key={l.id}
-              className="lyrics-item"
-              onClick={() => onSelect(l)}
-            >
-              <span className="lyrics-item__title">{l.title}</span>
-              <span className="lyrics-item__date">{formatDate(l.updated_at)}</span>
-            </li>
-          ))}
-        </ul>
-      )}
+      {/* Scrollable list */}
+      <div className="lyrics-library__body">
+        {loading ? (
+          <div className="lyrics-empty">Loading…</div>
+        ) : sheets.length === 0 ? (
+          <div className="lyrics-empty">Nothing here yet.<br />Tap <strong>+ New Sheet</strong> to start writing.</div>
+        ) : (
+          <ul className="lyrics-list">
+            {sheets.map(l => (
+              <li key={l.id} className="lyrics-item" onClick={() => onSelect(l)}>
+                <span className="lyrics-item__title">{l.title}</span>
+                <span className="lyrics-item__date">{formatDate(l.updated_at)}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   );
 }
