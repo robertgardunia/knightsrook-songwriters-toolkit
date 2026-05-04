@@ -1,4 +1,4 @@
-import { Show, SignIn } from "@clerk/react";
+import { Show, UserButton, useClerk } from "@clerk/react";
 import { useState } from "react";
 import SongList from "./pages/SongList";
 import SongDetail from "./pages/SongDetail";
@@ -32,14 +32,24 @@ function IconBarChart() {
 
 function IconSettings() {
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="12" cy="12" r="3" />
       <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
     </svg>
   );
 }
 
+function IconUser() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+      <circle cx="12" cy="7" r="4" />
+    </svg>
+  );
+}
+
 export default function App() {
+  const { openSignIn } = useClerk();
   const [activeSong, setActiveSong] = useState<Song | null>(null);
   const [libraryOpen, setLibraryOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -48,57 +58,75 @@ export default function App() {
   const [vizIdx, setVizIdx] = useState(0);
 
   return (
-    <>
-      <Show when="signed-out">
-        <div className="auth-screen">
-          <SignIn routing="hash" />
-        </div>
-      </Show>
-      <Show when="signed-in">
-        <div className="app">
-          <div className="app-inner">
-            <header className="app-chrome">
-              {activeSong ? (
-                <span className="chrome-song-title">{activeSong.title}</span>
-              ) : (
-                <span className="chrome-wordmark">Songwriter<br />Toolkit</span>
-              )}
-            </header>
+    <div className="app">
+      <div className="app-inner">
+        <header className="app-chrome">
+          {/* Settings — upper left ghost icon */}
+          <button
+            className="chrome-corner-btn chrome-corner-btn--left"
+            onClick={() => setSettingsOpen(true)}
+            title="Settings"
+          >
+            <IconSettings />
+          </button>
 
-            <main className="app-main">
-              {activeSong ? (
-                <SongDetail song={activeSong} />
-              ) : (
-                <SongList
-                  onSelect={setActiveSong}
-                  page={page}
-                  onPageChange={setPage}
-                  onTotalPagesChange={setTotalPages}
-                  vizType={VIZ_TYPES[vizIdx]}
-                />
-              )}
-            </main>
+          {/* Centered title */}
+          {activeSong ? (
+            <span className="chrome-song-title">{activeSong.title}</span>
+          ) : (
+            <span className="chrome-wordmark">Songwriter<br />Toolkit</span>
+          )}
+
+          {/* Auth — upper right */}
+          <div className="chrome-corner-btn--right">
+            <Show when="signed-out">
+              <button
+                className="chrome-corner-btn"
+                onClick={() => openSignIn()}
+                title="Sign in"
+              >
+                <IconUser />
+              </button>
+            </Show>
+            <Show when="signed-in">
+              <div className="chrome-corner-user">
+                <UserButton />
+              </div>
+            </Show>
           </div>
+        </header>
 
-          <nav className="app-nav">
-            {activeSong ? (
-              <Button icon onClick={() => setActiveSong(null)} title="Back">←</Button>
-            ) : totalPages > 1 ? (
-              <>
-                <Button icon onClick={() => setPage(p => Math.max(0, p - 1))} disabled={page === 0}>‹</Button>
-                <span className="page-indicator">{page + 1} / {totalPages}</span>
-                <Button icon onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))} disabled={page === totalPages - 1}>›</Button>
-              </>
-            ) : null}
-            <Button icon onClick={() => setVizIdx(i => (i + 1) % VIZ_TYPES.length)} title="Cycle visualizer"><IconBarChart /></Button>
-            <Button icon onClick={() => setLibraryOpen(true)} title="Library"><IconLibrary /></Button>
-            <Button icon onClick={() => setSettingsOpen(true)} title="Settings"><IconSettings /></Button>
-          </nav>
+        <main className="app-main">
+          {activeSong ? (
+            <SongDetail song={activeSong} />
+          ) : (
+            <SongList
+              onSelect={setActiveSong}
+              page={page}
+              onPageChange={setPage}
+              onTotalPagesChange={setTotalPages}
+              vizType={VIZ_TYPES[vizIdx]}
+            />
+          )}
+        </main>
+      </div>
 
-          <LibraryDrawer open={libraryOpen} onClose={() => setLibraryOpen(false)} />
-          <SettingsDrawer open={settingsOpen} onClose={() => setSettingsOpen(false)} />
-        </div>
-      </Show>
-    </>
+      <nav className="app-nav">
+        {activeSong ? (
+          <Button icon onClick={() => setActiveSong(null)} title="Back">←</Button>
+        ) : (
+          <>
+            <Button icon onClick={() => setPage(p => Math.max(0, p - 1))} disabled={page === 0}>‹</Button>
+            {totalPages > 1 && <span className="page-indicator">{page + 1} / {totalPages}</span>}
+            <Button icon onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))} disabled={page === totalPages - 1}>›</Button>
+          </>
+        )}
+        <Button icon onClick={() => setVizIdx(i => (i + 1) % VIZ_TYPES.length)} title="Cycle visualizer"><IconBarChart /></Button>
+        <Button icon onClick={() => setLibraryOpen(true)} title="Library"><IconLibrary /></Button>
+      </nav>
+
+      <LibraryDrawer open={libraryOpen} onClose={() => setLibraryOpen(false)} />
+      <SettingsDrawer open={settingsOpen} onClose={() => setSettingsOpen(false)} />
+    </div>
   );
 }

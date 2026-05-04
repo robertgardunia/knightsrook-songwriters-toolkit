@@ -115,9 +115,47 @@ html, body, #root { height: 100%; overscroll-behavior: none; }
 }
 
 
+/* Corner ghost buttons inside .app-chrome */
+.chrome-corner-btn--left,
+.chrome-corner-btn--right {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  z-index: 41;
+}
+
+.chrome-corner-btn--left  { left: 10px; }
+.chrome-corner-btn--right { right: 10px; }
+
+.chrome-corner-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.4rem;
+  border-radius: 8px;
+  color: rgba(40, 40, 60, 0.38);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: color .2s, filter .2s;
+}
+
+.chrome-corner-btn:hover {
+  color: var(--amber);
+  filter: drop-shadow(0 0 5px rgba(240, 168, 48, .65));
+}
+
+/* Clerk UserButton wrapper — let it display naturally */
+.chrome-corner-user {
+  display: flex;
+  align-items: center;
+}
+
 .chrome-wordmark {
   font-family: 'Fascinate Inline', cursive;
-  font-size: clamp(1rem, 3.8vw, 1.1rem);
+  font-size: clamp(1.4rem, 5vw, 1.75rem);
   letter-spacing: 0.04em;
   line-height: 1.15;
   text-align: center;
@@ -761,6 +799,23 @@ html, body, #root { height: 100%; overscroll-behavior: none; }
   font-style: italic;
 }
 
+.settings-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.settings-section-label {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--teal-dim);
+  padding: 1rem 0 0.4rem;
+}
+
+.settings-section-label:first-child { padding-top: 0; }
+
 .settings-row {
   display: flex;
   align-items: center;
@@ -769,6 +824,40 @@ html, body, #root { height: 100%; overscroll-behavior: none; }
   font-size: 1rem;
   font-weight: 600;
   color: var(--text);
+  padding: 0.4rem 0;
+  border-bottom: 1px solid rgba(255,255,255,.05);
+}
+
+/* Toggle switch */
+.toggle-btn {
+  width: 42px;
+  height: 22px;
+  border-radius: 11px;
+  border: none;
+  cursor: pointer;
+  background: rgba(60,60,80,.5);
+  position: relative;
+  flex-shrink: 0;
+  transition: background .2s;
+}
+
+.toggle-btn::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #666;
+  top: 3px;
+  left: 3px;
+  transition: transform .2s, background .2s;
+}
+
+.toggle-btn--on { background: var(--teal-dim); }
+
+.toggle-btn--on::after {
+  transform: translateX(20px);
+  background: var(--teal);
 }
 
 /* ── ANIMATIONS ────────────────────────────────────── */

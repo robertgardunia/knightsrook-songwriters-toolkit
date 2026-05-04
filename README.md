@@ -46,7 +46,12 @@ npm run dev   # starts on http://localhost:5173, proxies /api → http://localho
 - **Library** — audio file manager (slide-in drawer). Files persist independently of songs.
 - **Settings** — account + preferences (slide-in drawer).
 
-Chrome (Library, Settings, and visualizer cycle icons) is persistent across all screens. Tapping the bar-chart icon cycles through 5 visualizer types: bars, scope, VU meters, dot matrix, radial. Visualizer is idle (static) until a song is playing.
+Chrome is persistent across all screens:
+- **Upper-left of header**: dim ghost gear icon → opens Settings drawer (amber glow on hover)
+- **Upper-right of header**: dim ghost user icon when signed out (amber glow, opens sign-in modal) or Clerk `UserButton` when signed in
+- **Bottom nav**: prev/next chevrons (disabled at page limits), visualizer cycle icon, Library icon
+- Tapping the bar-chart icon cycles through 5 visualizer types: bars, scope, VU meters, dot matrix, radial
+- Visualizer is idle (static) until a song is playing
 
 ## Architecture
 
