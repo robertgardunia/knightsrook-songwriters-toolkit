@@ -61,7 +61,7 @@ Chrome (Library, Settings, and visualizer cycle icons) is persistent across all 
 songs          — id, user_id, title
 lyrics         — id, song_id, content
 audio_files    — id, user_id, filename, original_name, mime_type, duration_ms, size_bytes
-song_audio     — song_id, audio_file_id  (many-to-many join)
+song_audio     — song_id, audio_file_id  (many-to-many join, files survive song deletion)
 ```
 
 ## UI
