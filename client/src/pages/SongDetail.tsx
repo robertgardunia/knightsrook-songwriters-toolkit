@@ -5,28 +5,41 @@ import Mixer from "../components/Mixer";
 import { type VizType } from "../components/Visualizer";
 import Button from "../components/Button";
 
-interface Props {
-  song: Song;
-  vizType: VizType;
-}
-
 type Panel = "lyrics" | "mixer";
 type AnimState = "idle" | "out" | "in";
 
-export default function SongDetail({ song, vizType }: Props) {
+interface Props {
+  song: Song;
+  vizType: VizType;
+  panel: Panel;
+  onPanelChange: (p: Panel) => void;
+}
+
+export default function SongDetail({ song, vizType, panel, onPanelChange }: Props) {
   const [content, setContent] = useState<string | null>(null);
   const [saveState, setSaveState] = useState<"saved" | "unsaved" | "saving">("saved");
-  const [panel, setPanel] = useState<Panel>("lyrics");
+  const [displayPanel, setDisplayPanel] = useState<Panel>(panel);
   const [anim, setAnim] = useState<AnimState>("idle");
   const [selectedWord, setSelectedWord] = useState("");
   const [assistType, setAssistType] = useState<"rhymes" | "synonyms">("rhymes");
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [assistLoading, setAssistLoading] = useState(false);
-  const nextPanel = useRef<Panel>("lyrics");
+  const animLock = useRef(false);
 
   useEffect(() => {
     getLyrics(song.id).then(l => setContent(l.content ?? ""));
   }, [song.id]);
+
+  useEffect(() => {
+    if (panel === displayPanel || animLock.current) return;
+    animLock.current = true;
+    setAnim("out");
+    setTimeout(() => {
+      setDisplayPanel(panel);
+      setAnim("in");
+      setTimeout(() => { setAnim("idle"); animLock.current = false; }, 220);
+    }, 200);
+  }, [panel]);
 
   const handleChange = useCallback((html: string) => {
     setContent(html);
@@ -38,17 +51,6 @@ export default function SongDetail({ song, vizType }: Props) {
     setSaveState("saving");
     await saveLyrics(song.id, content);
     setSaveState("saved");
-  }
-
-  function switchPanel(to: Panel) {
-    if (to === panel || anim !== "idle") return;
-    nextPanel.current = to;
-    setAnim("out");
-    setTimeout(() => {
-      setPanel(to);
-      setAnim("in");
-      setTimeout(() => setAnim("idle"), 220);
-    }, 200);
   }
 
   async function handleAssist() {
@@ -66,14 +68,14 @@ export default function SongDetail({ song, vizType }: Props) {
     <div className="song-detail">
       <div className="panel-toggle">
         <Button
-          className={panel === "lyrics" ? "panel-btn--active" : ""}
-          onClick={() => switchPanel("lyrics")}
+          className={displayPanel === "lyrics" ? "panel-btn--active" : ""}
+          onClick={() => onPanelChange("lyrics")}
         >Lyrics</Button>
         <Button
-          className={panel === "mixer" ? "panel-btn--active" : ""}
-          onClick={() => switchPanel("mixer")}
+          className={displayPanel === "mixer" ? "panel-btn--active" : ""}
+          onClick={() => onPanelChange("mixer")}
         >Mixer</Button>
-        {panel === "lyrics" && (
+        {displayPanel === "lyrics" && (
           <Button size="sm" onClick={handleSave} disabled={saveState !== "unsaved"}>
             {saveState === "saving" ? "Saving…" : saveState === "unsaved" ? "Save" : "Saved"}
           </Button>
@@ -81,7 +83,7 @@ export default function SongDetail({ song, vizType }: Props) {
       </div>
 
       <div className={`panel-content panel-content--${anim}`}>
-        {panel === "lyrics" ? (
+        {displayPanel === "lyrics" ? (
           content === null ? (
             <div className="panel-loading">Loading…</div>
           ) : (

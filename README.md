@@ -47,11 +47,11 @@ npm run dev   # starts on http://localhost:5173, proxies /api → http://localho
 - **Settings** — account + preferences (slide-in drawer).
 
 Chrome is persistent across all screens:
-- **Upper-left of header**: dim ghost gear icon → opens Settings drawer (amber glow on hover)
-- **Upper-right of header**: dim ghost user icon when signed out (amber glow, opens sign-in modal) or Clerk `UserButton` when signed in
-- **Bottom nav**: prev/next chevrons (disabled at page limits), visualizer cycle icon, Library icon
+- **Bottom nav**: prev/next chevrons (disabled at page limits), visualizer cycle, Lyrics button (disabled unless a song is active), Library, Settings
 - Tapping the bar-chart icon cycles through 5 visualizer types: bars, scope, VU meters, dot matrix, radial
+- Lyrics nav button jumps directly to the lyrics panel from anywhere (Mixer tab, home screen)
 - Visualizer is idle (static) until a song is playing
+- Account management (sign in / manage profile) lives inside the Settings drawer
 
 ## Architecture
 

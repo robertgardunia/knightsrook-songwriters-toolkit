@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Show, useClerk, useUser } from "@clerk/react";
 import Button from "./Button";
 
 interface Props {
@@ -20,6 +21,28 @@ function Toggle({ label, defaultOn = false }: { label: string; defaultOn?: boole
   );
 }
 
+function AccountSection() {
+  const { openUserProfile, openSignIn } = useClerk();
+  const { user } = useUser();
+  return (
+    <div className="settings-account">
+      <Show when="signed-in">
+        <div className="settings-account__profile">
+          <img src={user?.imageUrl} alt="" className="settings-account__avatar" />
+          <div className="settings-account__info">
+            <span className="settings-account__name">{user?.fullName ?? user?.username}</span>
+            <span className="settings-account__email">{user?.primaryEmailAddress?.emailAddress}</span>
+          </div>
+        </div>
+        <Button size="sm" onClick={() => openUserProfile()}>Manage Account</Button>
+      </Show>
+      <Show when="signed-out">
+        <Button onClick={() => openSignIn()}>Sign In</Button>
+      </Show>
+    </div>
+  );
+}
+
 export default function SettingsDrawer({ open, onClose }: Props) {
   return (
     <div className={`drawer ${open ? "drawer--open" : ""}`} onClick={onClose}>
@@ -29,6 +52,9 @@ export default function SettingsDrawer({ open, onClose }: Props) {
           <Button variant="ghost" size="sm" icon onClick={onClose}>✕</Button>
         </div>
         <div className="drawer__body settings-body">
+          <p className="settings-section-label">Account</p>
+          <AccountSection />
+
           <p className="settings-section-label">Editing</p>
           <Toggle label="Auto-save lyrics" defaultOn />
           <Toggle label="Spell-check" defaultOn />

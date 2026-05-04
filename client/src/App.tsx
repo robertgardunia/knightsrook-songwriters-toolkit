@@ -1,5 +1,5 @@
 import { Show, useClerk, useUser } from "@clerk/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import SongList from "./pages/SongList";
 import SongDetail from "./pages/SongDetail";
 import LibraryDrawer from "./components/LibraryDrawer";
@@ -9,6 +9,8 @@ import type { Song } from "./lib/api";
 import { type VizType } from "./components/Visualizer";
 
 const VIZ_TYPES: VizType[] = ['bars', 'scope', 'vu', 'dots', 'radial'];
+
+type Panel = "lyrics" | "mixer";
 
 function IconLibrary() {
   return (
@@ -55,33 +57,32 @@ function IconSettings() {
   );
 }
 
-function IconUser() {
+function IconLyrics() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-      <circle cx="12" cy="7" r="4" />
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="4" y1="10" x2="16" y2="10" />
+      <line x1="4" y1="14" x2="20" y2="14" />
+      <line x1="4" y1="18" x2="12" y2="18" />
     </svg>
-  );
-}
-
-function NavUserButton() {
-  const { openUserProfile } = useClerk();
-  const { user } = useUser();
-  return (
-    <Button icon onClick={() => openUserProfile()} title="Account">
-      <img src={user?.imageUrl} alt="" style={{ width: 22, height: 22, borderRadius: '50%' }} />
-    </Button>
   );
 }
 
 export default function App() {
   const { openSignIn } = useClerk();
   const [activeSong, setActiveSong] = useState<Song | null>(null);
+  const [panel, setPanel] = useState<Panel>("lyrics");
   const [libraryOpen, setLibraryOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [vizIdx, setVizIdx] = useState(0);
+
+  useEffect(() => { setPanel("lyrics"); }, [activeSong?.id]);
+
+  function selectSong(song: Song | null) {
+    setActiveSong(song);
+  }
 
   return (
     <div className="app">
@@ -96,10 +97,15 @@ export default function App() {
 
         <main className="app-main">
           {activeSong ? (
-            <SongDetail song={activeSong} vizType={VIZ_TYPES[vizIdx]} />
+            <SongDetail
+              song={activeSong}
+              vizType={VIZ_TYPES[vizIdx]}
+              panel={panel}
+              onPanelChange={setPanel}
+            />
           ) : (
             <SongList
-              onSelect={setActiveSong}
+              onSelect={selectSong}
               page={page}
               onPageChange={setPage}
               onTotalPagesChange={setTotalPages}
@@ -112,20 +118,15 @@ export default function App() {
       <nav className="app-nav">
         <div className="nav-left">
           {activeSong
-            ? <Button icon onClick={() => setActiveSong(null)} title="Back"><IconChevronLeft /></Button>
+            ? <Button icon onClick={() => selectSong(null)} title="Back"><IconChevronLeft /></Button>
             : <Button icon onClick={() => setPage(p => Math.max(0, p - 1))} disabled={page === 0} title="Previous page"><IconChevronLeft /></Button>
           }
         </div>
         <div className="nav-center">
           <Button icon onClick={() => setVizIdx(i => (i + 1) % VIZ_TYPES.length)} title="Cycle visualizer"><IconBarChart /></Button>
+          <Button icon disabled={!activeSong} onClick={() => setPanel("lyrics")} title="Lyrics"><IconLyrics /></Button>
           <Button icon onClick={() => setLibraryOpen(true)} title="Audio library"><IconLibrary /></Button>
           <Button icon onClick={() => setSettingsOpen(true)} title="Settings"><IconSettings /></Button>
-          <Show when="signed-out">
-            <Button icon onClick={() => openSignIn()} title="Sign in"><IconUser /></Button>
-          </Show>
-          <Show when="signed-in">
-            <NavUserButton />
-          </Show>
         </div>
         <div className="nav-right">
           <Button icon
