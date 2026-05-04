@@ -1,2 +1,6 @@
-2026-05-01T00:00:00Z|knightsrook-songwriters-toolkit|none|initial-scaffold-complete|express+capacitor+mysql+clerk-stack|await-user-next-task
-2026-05-02T21:30:00Z|knightsrook-songwriters-toolkit|server/routes+client/+.env.example+README|built-server-routes+react-client|tiptap-lyric-editor+clerk-auth+ai-assist-sidebar+pwa|fill-env+provision-db+first-run+commit
+2026-05-03T05:00:00Z|knightsrook-songwriters-toolkit|client/index.css,SongList.tsx|play-pause-overlay-disabled-btn-fix|play/pause overlay on viz; disabled btn transparency fixed|await-user-next-task
+2026-05-03T05:15:00Z|knightsrook-songwriters-toolkit|client/src/pages/SongList.tsx|replace-play-pause-icons-bootstrap|use Bootstrap Icons bi-play-circle/bi-pause-circle|await-user-next-task
+2026-05-03T05:30:00Z|knightsrook-songwriters-toolkit|client/src/App.tsx,index.css|fix-corner-icons-arc-clip|moved settings/auth icons outside app-inner to avoid arc clipping|await-user-next-task
+2026-05-03T05:45:00Z|knightsrook-songwriters-toolkit|client/src/App.tsx,index.css|reposition-corner-icons-invert-gear|corner icons to actual corners; gear icon inverted to white ghost|await-user-next-task
+2026-05-03T06:00:00Z|knightsrook-songwriters-toolkit|client/src/index.css|neon-grad-two-passes-half-mag-caps|two mag/amber/teal grad passes, half-mag caps; kill SELECT A TRACK flicker|await-user-next-task
+2026-05-04T00:00:00Z|knightsrook-songwriters-toolkit|App.tsx,index.css,api.ts,SongList.tsx,SongDetail.tsx,songs.ts,lyrics.ts,index.html|nav-auth-polish+clk-fix+font|moved settings/auth icons to nav-center; clk Bearer token fix (isLoaded gate+setTokenGetter); Carter One wordmark; songs.ts+lyrics.ts getAuth(req) fix; SongDetail vizualizer in mixer; nav right btn always visible|commit-changes

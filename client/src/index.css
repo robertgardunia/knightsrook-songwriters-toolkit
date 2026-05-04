@@ -123,44 +123,16 @@ html, body, #root { height: 100%; overscroll-behavior: none; }
 }
 
 
-/* Corner icons — positioned on .app (no overflow clipping) so arc doesn't hide them */
-.chrome-icon {
-  position: absolute;
-  z-index: 60;
-  display: flex;
-  align-items: center;
-}
-
-.chrome-icon--settings { top: 20px; left: 20px; }
-.chrome-icon--auth     { top: 20px; right: 20px; }
-
-.chrome-corner-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  color: rgba(255, 255, 255, 0.35);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: color .2s, filter .2s;
-}
-
-.chrome-corner-btn:hover {
-  color: var(--amber);
-  filter: drop-shadow(0 0 5px rgba(240, 168, 48, .65));
-}
-
-/* Clerk UserButton wrapper */
-.chrome-corner-user { display: flex; align-items: center; }
 
 .chrome-wordmark {
-  font-family: 'Fascinate Inline', cursive;
-  font-size: clamp(1.4rem, 5vw, 1.75rem);
+  font-family: 'Carter One', cursive;
+  text-transform: uppercase;
+  font-size: clamp(1.3rem, 4.5vw, 1.55rem);
   letter-spacing: 0.04em;
   line-height: 1.15;
   text-align: center;
   color: #4a4a5a;
+  margin-top: 20px;
   text-shadow:
     1px 1px 0 #fff,
     2px 2px 0 rgba(255,255,255,.3),
@@ -169,16 +141,20 @@ html, body, #root { height: 100%; overscroll-behavior: none; }
 }
 
 .chrome-song-title {
-  font-family: 'Orbitron', monospace;
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  font-family: 'Carter One', cursive;
+  font-size: clamp(1.0rem, 4vw, 1.4rem);
   text-transform: uppercase;
-  color: var(--text);
-  max-width: 260px;
+  color: #4a4a5a;
+  text-shadow:
+    1px 1px 0 #fff,
+    2px 2px 0 rgba(255,255,255,.3),
+    -1px -1px 0 #000,
+    -2px -2px 0 rgba(0,0,0,.25);
+  max-width: 80%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  margin-top: 20px;
 }
 
 /* ── BOTTOM NAV ────────────────────────────────────── */
@@ -757,20 +733,14 @@ html, body, #root { height: 100%; overscroll-behavior: none; }
   box-shadow: var(--glow-amber);
 }
 
-/* ── MIXER PLACEHOLDER ─────────────────────────────── */
-.mixer-placeholder {
+/* ── MIXER VIEW ────────────────────────────────────── */
+.mixer-view {
   flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  color: var(--text-dim);
-  font-family: 'Space Mono', monospace;
-  font-size: 0.85rem;
+  padding: 0.75rem;
 }
-
-.mixer-placeholder__icon { font-size: 3rem; }
+.mixer-view .visualizer-wrap { flex: 1; }
 
 /* ── DRAWERS ───────────────────────────────────────── */
 .drawer {

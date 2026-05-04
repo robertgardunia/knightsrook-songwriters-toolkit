@@ -1,16 +1,18 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { getLyrics, saveLyrics, getAssist, type Song } from "../lib/api";
 import LyricEditor from "../components/LyricEditor";
+import Visualizer, { type VizType } from "../components/Visualizer";
 import Button from "../components/Button";
 
 interface Props {
   song: Song;
+  vizType: VizType;
 }
 
 type Panel = "lyrics" | "mixer";
 type AnimState = "idle" | "out" | "in";
 
-export default function SongDetail({ song }: Props) {
+export default function SongDetail({ song, vizType }: Props) {
   const [content, setContent] = useState<string | null>(null);
   const [saveState, setSaveState] = useState<"saved" | "unsaved" | "saving">("saved");
   const [panel, setPanel] = useState<Panel>("lyrics");
@@ -115,9 +117,10 @@ export default function SongDetail({ song }: Props) {
             </div>
           )
         ) : (
-          <div className="mixer-placeholder">
-            <div className="mixer-placeholder__icon">🎚</div>
-            <p>Mixer coming soon</p>
+          <div className="mixer-view">
+            <div className="visualizer-wrap">
+              <Visualizer type={vizType} active={false} />
+            </div>
           </div>
         )}
       </div>

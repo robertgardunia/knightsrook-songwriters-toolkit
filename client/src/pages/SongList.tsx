@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { listSongs, createSong, deleteSong, updateSong, type Song } from "../lib/api";
+import { useAuth } from "@clerk/react";
+import { listSongs, createSong, deleteSong, updateSong, setTokenGetter, type Song } from "../lib/api";
 import Visualizer, { type VizType } from "../components/Visualizer";
 import Button from "../components/Button";
 
@@ -14,6 +15,7 @@ interface Props {
 }
 
 export default function SongList({ onSelect, page, onPageChange, onTotalPagesChange, vizType }: Props) {
+  const { isLoaded, isSignedIn, getToken } = useAuth();
   const [songs, setSongs] = useState<Song[]>([]);
   const [loading, setLoading] = useState(true);
   const [addingAt, setAddingAt] = useState<number | null>(null);
@@ -29,8 +31,11 @@ export default function SongList({ onSelect, page, onPageChange, onTotalPagesCha
   const editSubmitRef = useRef(false);
 
   useEffect(() => {
+    if (!isLoaded) return;
+    if (!isSignedIn) { setLoading(false); return; }
+    setTokenGetter(getToken);
     listSongs().then(setSongs).finally(() => setLoading(false));
-  }, []);
+  }, [isLoaded, isSignedIn, getToken]);
 
   useEffect(() => {
     if (addingAt !== null) inputRef.current?.focus();

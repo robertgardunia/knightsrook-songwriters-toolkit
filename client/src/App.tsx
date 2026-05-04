@@ -1,4 +1,4 @@
-import { Show, UserButton, useClerk } from "@clerk/react";
+import { Show, useClerk, useUser } from "@clerk/react";
 import { useState } from "react";
 import SongList from "./pages/SongList";
 import SongDetail from "./pages/SongDetail";
@@ -48,7 +48,7 @@ function IconChevronRight() {
 
 function IconSettings() {
   return (
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="12" cy="12" r="3" />
       <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
     </svg>
@@ -64,6 +64,16 @@ function IconUser() {
   );
 }
 
+function NavUserButton() {
+  const { openUserProfile } = useClerk();
+  const { user } = useUser();
+  return (
+    <Button icon onClick={() => openUserProfile()} title="Account">
+      <img src={user?.imageUrl} alt="" style={{ width: 22, height: 22, borderRadius: '50%' }} />
+    </Button>
+  );
+}
+
 export default function App() {
   const { openSignIn } = useClerk();
   const [activeSong, setActiveSong] = useState<Song | null>(null);
@@ -75,21 +85,6 @@ export default function App() {
 
   return (
     <div className="app">
-      {/* Corner icons live outside app-inner to avoid arc overflow:hidden clipping */}
-      <button className="chrome-icon chrome-icon--settings" onClick={() => setSettingsOpen(true)} title="Settings">
-        <IconSettings />
-      </button>
-      <div className="chrome-icon chrome-icon--auth">
-        <Show when="signed-out">
-          <button className="chrome-corner-btn" onClick={() => openSignIn()} title="Sign in">
-            <IconUser />
-          </button>
-        </Show>
-        <Show when="signed-in">
-          <div className="chrome-corner-user"><UserButton /></div>
-        </Show>
-      </div>
-
       <div className="app-inner">
         <header className="app-chrome">
           {activeSong ? (
@@ -101,7 +96,7 @@ export default function App() {
 
         <main className="app-main">
           {activeSong ? (
-            <SongDetail song={activeSong} />
+            <SongDetail song={activeSong} vizType={VIZ_TYPES[vizIdx]} />
           ) : (
             <SongList
               onSelect={setActiveSong}
@@ -118,17 +113,26 @@ export default function App() {
         <div className="nav-left">
           {activeSong
             ? <Button icon onClick={() => setActiveSong(null)} title="Back"><IconChevronLeft /></Button>
-            : <Button icon onClick={() => setPage(p => Math.max(0, p - 1))} disabled={page === 0}><IconChevronLeft /></Button>
+            : <Button icon onClick={() => setPage(p => Math.max(0, p - 1))} disabled={page === 0} title="Previous page"><IconChevronLeft /></Button>
           }
         </div>
         <div className="nav-center">
           <Button icon onClick={() => setVizIdx(i => (i + 1) % VIZ_TYPES.length)} title="Cycle visualizer"><IconBarChart /></Button>
-          <Button icon onClick={() => setLibraryOpen(true)} title="Library"><IconLibrary /></Button>
+          <Button icon onClick={() => setLibraryOpen(true)} title="Audio library"><IconLibrary /></Button>
+          <Button icon onClick={() => setSettingsOpen(true)} title="Settings"><IconSettings /></Button>
+          <Show when="signed-out">
+            <Button icon onClick={() => openSignIn()} title="Sign in"><IconUser /></Button>
+          </Show>
+          <Show when="signed-in">
+            <NavUserButton />
+          </Show>
         </div>
         <div className="nav-right">
-          {!activeSong && (
-            <Button icon onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))} disabled={page === totalPages - 1}><IconChevronRight /></Button>
-          )}
+          <Button icon
+            onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
+            disabled={!!activeSong || page === totalPages - 1}
+            title="Next page"
+          ><IconChevronRight /></Button>
         </div>
       </nav>
 

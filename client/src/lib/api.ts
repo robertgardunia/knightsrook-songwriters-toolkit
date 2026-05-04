@@ -1,6 +1,17 @@
+let _getToken: (() => Promise<string | null>) | null = null;
+
+export function setTokenGetter(fn: () => Promise<string | null>) {
+  _getToken = fn;
+}
+
 async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
+  const token = _getToken ? await _getToken() : null;
   const res = await fetch(`/api${path}`, {
-    headers: { "Content-Type": "application/json", ...init?.headers },
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...init?.headers,
+    },
     ...init,
   });
   const json = (await res.json()) as { success: boolean; data: T; error?: string };

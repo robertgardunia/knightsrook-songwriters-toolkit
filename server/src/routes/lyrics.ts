@@ -1,17 +1,23 @@
 import { Router } from "express";
+import { getAuth } from "@clerk/express";
 import { v4 as uuidv4 } from "uuid";
 import { pool } from "../lib/db.js";
 
 const router = Router({ mergeParams: true });
 
+function userId(req: Parameters<typeof getAuth>[0]) {
+  return getAuth(req).userId ?? null;
+}
+
 router.get("/", async (req, res, next) => {
   try {
-    const userId = req.auth.userId;
+    const uid = userId(req);
+    if (!uid) { res.status(401).json({ success: false, error: "Unauthorized" }); return; }
     const { id: songId } = req.params;
 
     const [songs] = await pool.execute(
       "SELECT id FROM songs WHERE id = ? AND user_id = ?",
-      [songId, userId]
+      [songId, uid]
     );
     if ((songs as unknown[]).length === 0) {
       res.status(404).json({ success: false, error: "Song not found" });
@@ -22,9 +28,7 @@ router.get("/", async (req, res, next) => {
       "SELECT content, updated_at FROM lyrics WHERE song_id = ?",
       [songId]
     );
-    const lyrics = (rows as { content: string; updated_at: string }[])[0] ?? {
-      content: "",
-    };
+    const lyrics = (rows as { content: string; updated_at: string }[])[0] ?? { content: "" };
     res.json({ success: true, data: lyrics });
   } catch (err) {
     next(err);
@@ -33,7 +37,8 @@ router.get("/", async (req, res, next) => {
 
 router.put("/", async (req, res, next) => {
   try {
-    const userId = req.auth.userId;
+    const uid = userId(req);
+    if (!uid) { res.status(401).json({ success: false, error: "Unauthorized" }); return; }
     const { id: songId } = req.params;
     const { content } = req.body as { content?: string };
 
@@ -44,18 +49,14 @@ router.put("/", async (req, res, next) => {
 
     const [songs] = await pool.execute(
       "SELECT id FROM songs WHERE id = ? AND user_id = ?",
-      [songId, userId]
+      [songId, uid]
     );
     if ((songs as unknown[]).length === 0) {
       res.status(404).json({ success: false, error: "Song not found" });
       return;
     }
 
-    const [existing] = await pool.execute(
-      "SELECT id FROM lyrics WHERE song_id = ?",
-      [songId]
-    );
-
+    const [existing] = await pool.execute("SELECT id FROM lyrics WHERE song_id = ?", [songId]);
     if ((existing as unknown[]).length > 0) {
       await pool.execute(
         "UPDATE lyrics SET content = ?, updated_at = CURRENT_TIMESTAMP WHERE song_id = ?",

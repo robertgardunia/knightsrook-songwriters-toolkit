@@ -1,21 +1,19 @@
 import { Router } from "express";
+import { getAuth } from "@clerk/express";
 import { v4 as uuidv4 } from "uuid";
 import { pool } from "../lib/db.js";
-import type { AuthObject } from "@clerk/express";
-
-declare global {
-  namespace Express {
-    interface Request {
-      auth: AuthObject;
-    }
-  }
-}
 
 const router = Router();
 
+function auth(req: Parameters<typeof getAuth>[0]) {
+  const { userId } = getAuth(req);
+  return userId ?? null;
+}
+
 router.get("/", async (req, res, next) => {
   try {
-    const userId = req.auth.userId;
+    const userId = auth(req);
+    if (!userId) { res.status(401).json({ success: false, error: "Unauthorized" }); return; }
     const [rows] = await pool.execute(
       "SELECT id, title, created_at, updated_at FROM songs WHERE user_id = ? ORDER BY updated_at DESC",
       [userId]
@@ -28,7 +26,8 @@ router.get("/", async (req, res, next) => {
 
 router.post("/", async (req, res, next) => {
   try {
-    const userId = req.auth.userId;
+    const userId = auth(req);
+    if (!userId) { res.status(401).json({ success: false, error: "Unauthorized" }); return; }
     const { title } = req.body as { title?: string };
     if (!title || typeof title !== "string" || !title.trim()) {
       res.status(400).json({ success: false, error: "title is required" });
@@ -47,7 +46,8 @@ router.post("/", async (req, res, next) => {
 
 router.patch("/:id", async (req, res, next) => {
   try {
-    const userId = req.auth.userId;
+    const userId = auth(req);
+    if (!userId) { res.status(401).json({ success: false, error: "Unauthorized" }); return; }
     const { id } = req.params;
     const { title } = req.body as { title?: string };
     if (!title || typeof title !== "string" || !title.trim()) {
@@ -71,7 +71,8 @@ router.patch("/:id", async (req, res, next) => {
 
 router.delete("/:id", async (req, res, next) => {
   try {
-    const userId = req.auth.userId;
+    const userId = auth(req);
+    if (!userId) { res.status(401).json({ success: false, error: "Unauthorized" }); return; }
     const { id } = req.params;
     const [result] = await pool.execute(
       "DELETE FROM songs WHERE id = ? AND user_id = ?",

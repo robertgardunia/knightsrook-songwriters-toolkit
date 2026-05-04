@@ -60,6 +60,10 @@ Chrome is persistent across all screens:
 - Lyrics sync via server/MySQL.
 - Audio stays local for MVP (metadata only in DB).
 
+## Auth flow
+
+All API routes require a valid Clerk session. The client obtains a JWT via `useAuth().getToken()` and stores it in a module-level getter (`client/src/lib/api.ts: setTokenGetter`). `SongList` registers the getter once Clerk is loaded (`isLoaded && isSignedIn`), then every `apiFetch` call includes `Authorization: Bearer <token>`. Server-side routes use `getAuth(req)` from `@clerk/express` and return 401 if `userId` is null.
+
 ## Data model
 
 ```
