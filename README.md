@@ -73,4 +73,5 @@ song_audio     — song_id, audio_file_id  (many-to-many join)
 - Reusable `Button` component (`variant=plastic|ghost`, `size=md|sm`, `icon`) — all buttons share the same chunky ivory plastic CSS with cut-hole protrusion effect
 - Neon gradient frame (magenta → amber → teal) wraps entire app including header; 8px border with `border-radius: 72px 72px 20px 20px`; chrome ring sheen via `::after` at z-index 1000
 - Header centered title only ("Songwriter Toolkit" in Bungee Inline, bottom-aligned); all controls (Library, Settings, Back, pagination) in persistent bottom nav bar
-- Header and bottom nav clipped to inner corner radii (64px top, 12px bottom) so dark fills never cover neon corners
+- Header and bottom nav clipped to inner corner radii (194px top, 12px bottom) so dark fills never cover neon corners
+- Inner chrome bezel follows the 194px arc via inset box-shadow (6px, dark→bright→dark), sits inside content without touching neon

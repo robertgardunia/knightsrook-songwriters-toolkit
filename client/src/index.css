@@ -67,35 +67,20 @@ html, body, #root { height: 100%; overscroll-behavior: none; }
 }
 
 /* Inner chrome bezel — silver rings just inside the neon border, follows the arc */
-.app::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 194px 194px 12px 12px;
-  box-shadow:
-    0 0 0 2px #444,
-    0 0 0 3px #999,
-    0 0 0 5px #333;
-  pointer-events: none;
-  z-index: 999;
-}
-
-/* Chrome ring sheen — multiply over neon, highest z */
 .app::after {
   content: '';
   position: absolute;
   inset: 0;
   border-radius: 194px 194px 12px 12px;
-  clip-path: inset(-8px round 202px 202px 20px 20px);
-  mix-blend-mode: multiply;
-  pointer-events: none;
-  z-index: 1000;
   box-shadow:
-    0 0 0 1px #c0c0c0,
-    0 0 0 2px #d8d8d8,
-    0 0 0 3px #eeeeee,
-    0 0 0 4px #f8f8f8,
-    0 0 0 5px #ffffff;
+    inset 0 0 0 1px #2a2a2a,
+    inset 0 0 0 2px #777,
+    inset 0 0 0 3px #bbb,
+    inset 0 0 0 4px #ccc,
+    inset 0 0 0 5px #777,
+    inset 0 0 0 6px #2a2a2a;
+  pointer-events: none;
+  z-index: 999;
 }
 
 /* Clips header + content to the top arc as one unit */
@@ -219,12 +204,7 @@ html, body, #root { height: 100%; overscroll-behavior: none; }
   overflow: hidden;
   margin: 0 5px 5px;
   border-radius: 0 0 8px 8px;
-  /* Silver chrome frame around the whole section */
-  box-shadow:
-    0 0 0 2px #555,
-    0 0 0 3px #aaa,
-    0 0 0 5px #444,
-    0 6px 24px rgba(0,0,0,.7);
+  box-shadow: 0 6px 24px rgba(0,0,0,.7);
 }
 
 /* ── JUKEBOX PANEL ─────────────────────────────────── */
