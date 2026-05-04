@@ -80,7 +80,7 @@ html, body, #root { height: 100%; overscroll-behavior: none; }
     inset 0 0 0 5px #777,
     inset 0 0 0 6px #2a2a2a;
   pointer-events: none;
-  z-index: 10;
+  z-index: 20;
 }
 
 /* Clips header + content to the top arc as one unit */
@@ -91,8 +91,6 @@ html, body, #root { height: 100%; overscroll-behavior: none; }
   overflow: hidden;
   border-radius: 194px 194px 0 0;
   min-height: 0;
-  position: relative;
-  z-index: 20;
 }
 
 /* ── PERSISTENT CHROME ─────────────────────────────── */
