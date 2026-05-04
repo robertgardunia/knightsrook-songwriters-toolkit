@@ -39,6 +39,8 @@ export default function Visualizer() {
         b.t = 0.08 + 0.78 * Math.abs(Math.sin(tick * 0.022 + b.p));
         b.v += (b.t - b.v) * 0.07;
 
+        if (i < 2 || i >= BARS - 2) return;
+
         const x = i * bw + gap / 2;
         const h = b.v * H;
         const y = H - h;

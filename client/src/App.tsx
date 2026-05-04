@@ -42,26 +42,28 @@ export default function App() {
       </Show>
       <Show when="signed-in">
         <div className="app">
-          <header className="app-chrome">
-            {activeSong ? (
-              <span className="chrome-song-title">{activeSong.title}</span>
-            ) : (
-              <span className="chrome-wordmark">Songwriter's<br />Toolkit</span>
-            )}
-          </header>
+          <div className="app-inner">
+            <header className="app-chrome">
+              {activeSong ? (
+                <span className="chrome-song-title">{activeSong.title}</span>
+              ) : (
+                <span className="chrome-wordmark">Songwriter Toolkit</span>
+              )}
+            </header>
 
-          <main className="app-main">
-            {activeSong ? (
-              <SongDetail song={activeSong} />
-            ) : (
-              <SongList
-                onSelect={setActiveSong}
-                page={page}
-                onPageChange={setPage}
-                onTotalPagesChange={setTotalPages}
-              />
-            )}
-          </main>
+            <main className="app-main">
+              {activeSong ? (
+                <SongDetail song={activeSong} />
+              ) : (
+                <SongList
+                  onSelect={setActiveSong}
+                  page={page}
+                  onPageChange={setPage}
+                  onTotalPagesChange={setTotalPages}
+                />
+              )}
+            </main>
+          </div>
 
           <nav className="app-nav">
             {activeSong ? (
