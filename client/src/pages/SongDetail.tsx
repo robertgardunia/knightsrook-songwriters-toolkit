@@ -1,7 +1,8 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { getLyrics, saveLyrics, getAssist, type Song } from "../lib/api";
 import LyricEditor from "../components/LyricEditor";
-import Visualizer, { type VizType } from "../components/Visualizer";
+import Mixer from "../components/Mixer";
+import { type VizType } from "../components/Visualizer";
 import Button from "../components/Button";
 
 interface Props {
@@ -117,11 +118,7 @@ export default function SongDetail({ song, vizType }: Props) {
             </div>
           )
         ) : (
-          <div className="mixer-view">
-            <div className="visualizer-wrap">
-              <Visualizer type={vizType} active={false} />
-            </div>
-          </div>
+          <Mixer songId={song.id} vizType={vizType} />
         )}
       </div>
     </div>

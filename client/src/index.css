@@ -87,13 +87,7 @@ html, body, #root { height: 100%; overscroll-behavior: none; }
   position: absolute;
   inset: 0;
   border-radius: 194px 194px 12px 12px;
-  box-shadow:
-    inset 0 0 0 1px #2a2a2a,
-    inset 0 0 0 2px #777,
-    inset 0 0 0 3px #bbb,
-    inset 0 0 0 4px #ccc,
-    inset 0 0 0 5px #777,
-    inset 0 0 0 6px #2a2a2a;
+  box-shadow: inset 0 0 0 1px #2a2a2a, inset 0 0 0 2px #777, inset 0 0 0 3px #bbb, inset 0 0 0 0px #ccc, inset 0 0 0 0px #777, inset 0 0 0 0px #2a2a2a;
   pointer-events: none;
   z-index: 50;
 }
@@ -733,14 +727,125 @@ html, body, #root { height: 100%; overscroll-behavior: none; }
   box-shadow: var(--glow-amber);
 }
 
-/* ── MIXER VIEW ────────────────────────────────────── */
-.mixer-view {
+/* ── MIXER ─────────────────────────────────────────── */
+.mixer {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 0.75rem;
+  overflow: hidden;
 }
-.mixer-view .visualizer-wrap { flex: 1; }
+.mixer .visualizer-wrap { height: 120px; flex-shrink: 0; }
+
+.mixer-transport {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  flex-shrink: 0;
+}
+
+.mixer-add-btn {
+  background: none;
+  border: 1px solid rgba(255,255,255,.2);
+  color: var(--text-dim);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.75rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: auto;
+  transition: color .15s, border-color .15s;
+}
+.mixer-add-btn:hover { color: var(--amber); border-color: var(--amber); }
+
+.mixer-tracks {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0.25rem 0.5rem 0.5rem;
+}
+
+.mixer-empty {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-dim);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  text-align: center;
+  padding: 1rem;
+}
+
+.mixer-track {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255,255,255,.04);
+  border-radius: 6px;
+  padding: 0.4rem 0.6rem;
+  min-height: 44px;
+}
+
+.mixer-track__name {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.75rem;
+  color: var(--text);
+  width: 90px;
+  flex-shrink: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mixer-track__wave {
+  flex: 1;
+  height: 32px;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(255,255,255,.06) 0px,
+    rgba(255,255,255,.06) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+  border-radius: 3px;
+}
+
+.mixer-track__controls {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.mixer-track__vol {
+  width: 60px;
+  accent-color: var(--amber);
+}
+
+.mixer-btn {
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.12);
+  color: var(--text-dim);
+  font-family: 'Orbitron', monospace;
+  font-size: 0.55rem;
+  font-weight: 700;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .15s, color .15s;
+}
+.mixer-btn--active { background: var(--amber); color: #000; border-color: var(--amber); }
+.mixer-btn--danger:hover { background: rgba(208,64,64,.5); color: #fff; border-color: transparent; }
+
+.btn--recording { color: var(--magenta) !important; animation: pulse-record 1s ease-in-out infinite; }
+@keyframes pulse-record { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
 
 /* ── DRAWERS ───────────────────────────────────────── */
 .drawer {

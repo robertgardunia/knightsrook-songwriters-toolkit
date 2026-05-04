@@ -58,7 +58,31 @@ Chrome is persistent across all screens:
 - Songs are the primary object. Each song has lyrics and can reference multiple audio files.
 - Audio files are stored independently (`audio_files` table). Many-to-many with songs via `song_audio` join table. Files survive song deletion.
 - Lyrics sync via server/MySQL.
-- Audio stays local for MVP (metadata only in DB).
+- Audio files uploaded via `multer` to `server/uploads/`; served unauthenticated at `/api/audio/file/:filename` (UUID filenames are unguessable).
+
+## Audio engine
+
+`client/src/lib/audioEngine.ts` — singleton Web Audio API engine.
+
+- `loadTrack(id, name, url)` — fetches + decodes audio; creates a `GainNode` on the master chain
+- `play()` / `pause()` / `stop()` — source nodes are one-shot; new `AudioBufferSourceNode` per play
+- `setVolume()`, `setMute()`, `setSolo()` with proper solo logic
+- Subscriber pattern for React sync
+
+`client/src/hooks/useAudioEngine.ts` — React hook that loads server tracks, syncs engine state, and exposes `startRecording()` / `stopRecording()` via `MediaRecorder`.
+
+`client/src/components/Mixer.tsx` — Mixer UI: Visualizer, transport bar (play/pause/stop/record/import), per-track controls (volume, mute, solo, delete).
+
+## Dev seed
+
+Generate 4 WAV test tracks and insert a "Dev Test Track" song:
+
+```bash
+cd server
+npx tsx scripts/seed-dev.ts <clerk-user-id>
+```
+
+Tracks: Bass (80 Hz sine), Melody (440 Hz), Harmony (523 Hz), Kick (decaying frequency burst).
 
 ## Auth flow
 

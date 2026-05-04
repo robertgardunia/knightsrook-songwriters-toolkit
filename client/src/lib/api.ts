@@ -42,3 +42,32 @@ export const getAssist = (word: string, type: "rhymes" | "synonyms") =>
     method: "POST",
     body: JSON.stringify({ word, type }),
   });
+
+export type AudioFile = {
+  id: string;
+  filename: string;
+  original_name: string;
+  mime_type: string;
+  duration_ms: number | null;
+  size_bytes: number;
+};
+
+export const listSongTracks = (songId: string) =>
+  apiFetch<AudioFile[]>(`/songs/${songId}/audio`);
+
+export async function uploadTrack(songId: string, file: File): Promise<AudioFile> {
+  const token = _getToken ? await _getToken() : null;
+  const form = new FormData();
+  form.append("audio", file);
+  const res = await fetch(`/api/songs/${songId}/audio`, {
+    method: "POST",
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    body: form,
+  });
+  const json = (await res.json()) as { success: boolean; data: AudioFile; error?: string };
+  if (!json.success) throw new Error(json.error ?? "Upload failed");
+  return json.data;
+}
+
+export const deleteTrack = (songId: string, fileId: string) =>
+  apiFetch<null>(`/songs/${songId}/audio/${fileId}`, { method: "DELETE" });
