@@ -22,6 +22,7 @@ export default function SongList({ onSelect, page, onPageChange, onTotalPagesCha
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState("");
   const [search, setSearch] = useState("");
+  const [isPlaying, setIsPlaying] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const editRef = useRef<HTMLInputElement>(null);
   const addSubmitRef = useRef(false);
@@ -85,8 +86,10 @@ export default function SongList({ onSelect, page, onPageChange, onTotalPagesCha
   }
 
   function handleSelectSong(song: Song) {
-    setSelectedSong(prev => prev?.id === song.id ? null : song);
+    const next = selectedSong?.id === song.id ? null : song;
+    setSelectedSong(next);
     setEditingId(null);
+    if (!next) setIsPlaying(false);
   }
 
   function startEdit(song: Song) {
@@ -98,7 +101,25 @@ export default function SongList({ onSelect, page, onPageChange, onTotalPagesCha
   return (
     <div className="home">
       <div className="visualizer-wrap">
-        <Visualizer type={vizType} active={false} />
+        <Visualizer type={vizType} active={isPlaying} />
+        <button
+          className={`viz-play-btn${selectedSong ? (isPlaying ? ' viz-play-btn--playing' : ' viz-play-btn--ready') : ''}`}
+          onClick={() => selectedSong && setIsPlaying(p => !p)}
+          aria-label={isPlaying ? "Pause" : "Play"}
+        >
+          {isPlaying ? (
+            <svg width="44" height="44" viewBox="0 0 44 44" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <circle cx="22" cy="22" r="20" />
+              <rect x="15" y="15" width="5" height="14" rx="1" fill="currentColor" stroke="none" />
+              <rect x="24" y="15" width="5" height="14" rx="1" fill="currentColor" stroke="none" />
+            </svg>
+          ) : (
+            <svg width="44" height="44" viewBox="0 0 44 44" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <circle cx="22" cy="22" r="20" />
+              <polygon points="18 14 32 22 18 30 18 14" fill="currentColor" stroke="none" />
+            </svg>
+          )}
+        </button>
       </div>
 
       <div className="search-bar">

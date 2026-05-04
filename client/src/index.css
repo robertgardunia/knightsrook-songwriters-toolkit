@@ -250,6 +250,36 @@ html, body, #root { height: 100%; overscroll-behavior: none; }
   position: relative;
 }
 
+/* Play/pause overlay on visualizer */
+.viz-play-btn {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: default;
+  pointer-events: none;
+  color: rgba(255,255,255,.1);
+  transition: color .25s, filter .25s;
+}
+
+.viz-play-btn--ready {
+  cursor: pointer;
+  pointer-events: all;
+  color: rgba(240,168,48,.55);
+  filter: drop-shadow(0 0 8px rgba(240,168,48,.35));
+}
+
+.viz-play-btn--playing {
+  cursor: pointer;
+  pointer-events: all;
+  color: rgba(0,212,200,.75);
+  filter: drop-shadow(0 0 10px rgba(0,212,200,.45));
+}
+
 .visualizer-canvas {
   position: absolute;
   inset: 0;
@@ -536,7 +566,7 @@ html, body, #root { height: 100%; overscroll-behavior: none; }
     0 0.5px 2px rgba(0,0,0,.8);
 }
 
-.btn--plastic:disabled { opacity: 0.4; cursor: default; transform: none; filter: none; }
+.btn--plastic:disabled { filter: brightness(0.62) saturate(0.35); cursor: default; transform: none; }
 
 /* Ghost — no fill, used for destructive/secondary actions */
 .btn--ghost {
