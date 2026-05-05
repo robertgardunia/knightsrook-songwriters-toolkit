@@ -122,8 +122,10 @@ export default function App() {
 
   const title = headerTitle();
 
+  const isSubpage = !!(activeSong || lyricsMode);
+
   return (
-    <div className="app">
+    <div className={`app${isSubpage ? ' app--subpage' : ''}`}>
       <div className="app-inner">
         <header className="app-chrome">
           {title ? (

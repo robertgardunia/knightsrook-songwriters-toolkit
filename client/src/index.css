@@ -92,6 +92,16 @@ html, body, #root { height: 100%; overscroll-behavior: none; }
   z-index: 50;
 }
 
+/* ── SUBPAGE MODE — no neon, full chrome edge-to-edge ── */
+.app--subpage {
+  border-width: 0;
+  border-radius: 0 0 20px 20px;
+  background: var(--bg);
+  animation: none;
+}
+.app--subpage::after { display: none; }
+.app--subpage .app-inner { border-radius: 0; }
+
 /* Clips header + content to the top arc as one unit */
 .app-inner {
   flex: 1;
